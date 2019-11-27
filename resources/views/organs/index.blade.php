@@ -1,36 +1,39 @@
 @extends ('layouts.app')
 
+@section('title', "سازمان ها")
+
 @section ('content')
     <div class="container">
-        <h1 class="pb-2 border-bottom">دستگاه‌های اجرایی</h1>
-        <table class="table striped-table bordered-table">
-            <thead>
-                <tr>
-                    <th>عنوان</th>
-                    <th>شهرستان</th>
-                    <th>عملکردها</th>
-                </tr>
-            </thead>
-        @foreach($organs as $organ)
-            <tr>
-                <td>
-                    <a href=" {{ route('organ.show', $organ->id) }}">
-                        {{ $organ->title }}
-                    </a>
-                </td>
+        <div v-if="isLoading">
+            @include('global.loading')
+        </div>
 
-                <td>
-                        {{ $organ->city->title }}
-                </td>
+        <div v-show="!isLoading">
+            <div>
+                @include('organs.header')
+            </div>
 
-                <td>
-                    <a class="mr-2" href=" {{ route('organ.edit', $organ->id) }}">
-                        ویرایش
-                    </a>
-                </td>
-            </tr>
-        @endforeach
-        </table>
+            <div v-if="isListMode">
+                @include('organs.list')
+            </div>
+
+            <div v-if="isCreateMode">
+                @include('organs.create')
+            </div>
+        </div>
     </div>
+@endsection
 
+@section('scripts')
+    <script>
+        document.pageData = {
+            url: {
+                organStore: '{{ route('organ.store') }}',
+                organShow: '{{ route('organ.show', '_ID_') }}',
+                organList: '{{ route('api.organ.list') }}',
+                cityList: '{{ route('api.city.list') }}'
+            }
+        };
+    </script>
+    <script defer src="{{ mix('js/pages/organ/index/index.js') }}"></script>
 @endsection

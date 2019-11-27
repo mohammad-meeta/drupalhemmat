@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Organ;
 use App\City;
+use App\Http\Resources\OrganizationStore;
 use Illuminate\Http\Request;
 
 class OrganController extends Controller
@@ -15,8 +16,7 @@ class OrganController extends Controller
      */
     public function index()
     {
-        $organs = Organ::with('city')->get();
-        return view('organs.index', compact('organs'));
+        return view('organs.index');
     }
 
     /**
@@ -43,7 +43,14 @@ class OrganController extends Controller
             'city_id' => $request->city
         ]);
 
-        return redirect()->route('organ.index')->with('success', 'دستگاه اجرایی با موفقیت ذخیره شد');
+        $organ->load('city');
+        $organ = new OrganizationStore($organ);
+
+        return [
+            "success" => ! is_null($organ),
+            "data" => $organ
+        ];
+        // return redirect()->route('organ.index')->with('success', 'دستگاه اجرایی با موفقیت ذخیره شد');
     }
 
     /**
@@ -93,5 +100,17 @@ class OrganController extends Controller
     public function destroy(Organ $organ)
     {
         //
+    }
+
+
+    /**
+     * Get organizations list
+     */
+    public function organsList()
+    {
+        $list = Organ::with('city')
+            ->paginate(parent::PAGE_SIZE);
+
+        return $list;
     }
 }

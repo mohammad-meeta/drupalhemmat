@@ -4,8 +4,8 @@ const public = 'public';
 /* JS */
 mix.js('resources/js/app.js', `${public}/js`)
     .js('resources/js/pages/welcome/index.js', `${public}/js/pages/welcome`)
-    .js('resources/js/pages/articles/edit.js', `${public}/js/pages/articles`);
-
+    .js('resources/js/pages/articles/edit.js', `${public}/js/pages/articles`)
+    .js('resources/js/pages/organ/index/index.js', `${public}/js/pages/organ/index`);
 
 /* SASS */
 mix.sass('resources/sass/app.scss', `${public}/css`);
@@ -14,4 +14,5 @@ mix.sass('resources/sass/app.scss', `${public}/css`);
 mix.copyDirectory('resources/js/ckeditor4', `${public}/js/ckeditor`)
 
 /* ETC */
-mix.version();
+mix.disableSuccessNotifications()
+    .version();

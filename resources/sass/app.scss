@@ -5,7 +5,12 @@
 @import '~font-awesome/scss/font-awesome';
 @import '~bootstrap/scss/bootstrap';
 
-
 body {
     text-align: unset;
+}
+
+.pp-striped-table {
+    @extend .table;
+    // @extend .table.striped;
+    // @extend .table.bordered;
 }

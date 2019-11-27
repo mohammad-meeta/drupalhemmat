@@ -89,4 +89,14 @@ class CityController extends Controller
     {
         //
     }
+
+    /**
+     * Cities list
+     */
+    public function citiesList()
+    {
+        $list = City::all();
+
+        return $list;
+    }
 }

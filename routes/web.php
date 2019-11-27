@@ -12,11 +12,11 @@ Route::resource('article-type', 'ArticleTypeController');
 Route::resource('article', 'ArticleController');
 
 Route::resource('city', 'CityController');
-Route::resource('organ', 'OrganController');
 
 Route::resource('user', 'UserController');
 Route::resource('role', 'RoleController');
 
+Route::resource('organ', 'OrganController');
 
 /*Route::get('ckeditor', 'CkeditorController@index');
 Route::post('ckeditor/upload', 'CkeditorController@upload')->name('ckeditor.upload');*/
