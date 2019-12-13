@@ -1,18 +1,39 @@
 @extends ('layouts.app')
 
+@section('title', "لیست شهرها")
+
 @section ('content')
     <div class="container">
-        <h1 class="pb-2 border-bottom">شهرها</h1>
-        @foreach($cities as $city)
-            <div class="row">
-                <a href=" {{ route('city.show', $city->id) }}">
-                    {{ $city->title }}
-                </a>
-                <a class="mr-2" href=" {{ route('city.edit', $city->id) }}">
-                    ویرایش
-                </a>
-            </div>
-        @endforeach
-    </div>
+        <div v-if="isLoading">
+            @include('global.loading')
+        </div>
 
+         <div v-show="!isLoading">
+            <div>
+                @include('cities.header')
+            </div>
+
+            <div v-if="isListMode">
+                @include('cities.list')
+            </div>
+
+            <div v-if="isCreateMode || isEditMode">
+                @include('cities.create')
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('scripts')
+    <script>
+        document.pageData = {
+            url: {
+                cityStore: '{{ route('city.store') }}',
+                cityUpdate: '{{ route('city.update', '_ID_') }}',
+                cityShow: '{{ route('city.show', '_ID_') }}',
+                cityList: '{{ route('api.city.list') }}',
+            }
+        };
+    </script>
+    <script defer src="{{ mix('js/pages/city/index/index.js') }}"></script>
 @endsection

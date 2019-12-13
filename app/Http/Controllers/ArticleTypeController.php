@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ArticleType;
 use Illuminate\Http\Request;
+use App\Http\Resources\ArticleTypeStore;
 
 class ArticleTypeController extends Controller
 {
@@ -14,8 +15,7 @@ class ArticleTypeController extends Controller
      */
     public function index()
     {
-        $articleTypes = ArticleType::all();
-        return view('article_types.index', compact('articleTypes'));
+        return view('article_types.index');
     }
 
     /**
@@ -39,7 +39,13 @@ class ArticleTypeController extends Controller
         $articleType = ArticleType::create([
             'title' => $request->title
         ]);
-        return redirect('/article-type')->with('success', 'نوع مطلب با موفقیت ذخیره شد.');
+        $articleType = new ArticleTypeStore($articleType);
+
+        return [
+            "success" => !is_null($articleType),
+            "data" => $articleType
+        ];
+
     }
 
     /**
@@ -73,8 +79,20 @@ class ArticleTypeController extends Controller
      */
     public function update(Request $request, ArticleType $articleType)
     {
-        $articleType->update($request->all());
-        return redirect('/article-type/' . $articleType->id)->with('success', 'نوع مطلب با موفقیت ویرایش شد.');
+
+        $articleType['title'] = $request['title'];
+        $articleType->save();
+
+
+        $articleType = new ArticleTypeStore($articleType);
+
+        return [
+            "success" => !is_null($articleType),
+            "data" => $articleType
+        ];
+
+   /*     $articleType->update($request->all());
+        return redirect('/article-type/' . $articleType->id)->with('success', 'نوع مطلب با موفقیت ویرایش شد.');*/
     }
 
     /**
@@ -88,5 +106,15 @@ class ArticleTypeController extends Controller
         $articleType->delete();
         return redirect()->route('article-type.index')
             ->with('success', 'نوع مطلب' . $articleType->title . 'حذف شد.');
+    }
+
+    /**
+     * Article types list
+     */
+    public function articleTypesList()
+    {
+        $list = ArticleType::all();
+
+        return $list;
     }
 }

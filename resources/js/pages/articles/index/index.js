@@ -1,18 +1,24 @@
 'use strict';
 
 /**
- * Organ Index class
+ * Article Index class
  */
-function OragnIndex() {}
-module.exports = OragnIndex;
+function ArticleIndex() {}
+module.exports = ArticleIndex;
 
 /**
- * Init funciton
+ * Init function
  */
-OragnIndex.init = function init() {
+ArticleIndex.init = function init() {
+    import ArticleList from '@components/pages/articles/list.vue';
+
     window.v =
         new Vue({
             el: '#app',
+
+            components: {
+                ArticleList
+            },
 
             data: {
                 FORM_MODES: {
@@ -22,9 +28,9 @@ OragnIndex.init = function init() {
                     DELETE: 3
                 },
 
-                organs: [],
-                cities: [],
-                newOrgan: {},
+                articles: [],
+                articleTypes: [],
+                newArticle: {},
 
                 isLoading: true,
                 formMode: null,
@@ -34,7 +40,7 @@ OragnIndex.init = function init() {
 
             computed: {
                 hasRecord() {
-                    return this.organs.length;
+                    return this.articles.length;
                 },
 
                 isListMode() {
@@ -51,7 +57,7 @@ OragnIndex.init = function init() {
             },
 
             created() {
-                this.clearNewOrgan();
+                this.clearNewArticle();
                 this.changeFormMode(this.FORM_MODES.LIST);
             },
 
@@ -61,57 +67,57 @@ OragnIndex.init = function init() {
 
             methods: {
                 /**
-                 * Show organization
+                 * Show article
                  */
-                showOrganization(organ) {
-                    const url = document.pageData.url.organShow.replace(`_ID_`, organ.id);
+                showArticle(article) {
+                    const url = document.pageData.url.articleShow.replace(`_ID_`, article.id);
 
                     window.location.href = url;
                 },
 
                 /**
-                 * Save new organization data
+                 * Save new article data
                  */
-                saveNewOrgan() {
+                saveNewArticle() {
                     this.showLoading();
 
-                    let newOrgan = {
-                        id: this.newOrgan.id,
-                        title: this.newOrgan.title,
-                        city: this.newOrgan.city
+                    let newArticle = {
+                        id: this.newArticle.id,
+                        title: this.newArticle.title,
+                        body: this.newArticle.body,
+                        type: this.newArticle.type
                     };
 
                     let url = "";
                     let method = "";
                     let registerType = "";
 
-                    if (newOrgan.id == null) {
+                    if (newArticle.id == null) {
                         registerType = "Registration";
-                        url = document.pageData.url.organStore;
+                        url = document.pageData.url.articleStore;
                         method = "post";
                     } else {
                         registerType = "Update";
-                        url = document.pageData.url.organUpdate.replace("_ID_", newOrgan.id);
+                        url = document.pageData.url.articleUpdate.replace("_ID_", newArticle.id);
                         method = "patch";
                     }
 
-                    axios[method](url, newOrgan)
+                    axios[method](url, newArticle)
                         .then(res => {
                             const data = res.data;
 
                             if (data.success) {
                                 let index;
 
-                                if (newOrgan.id == null){
-                                    index = this.organs.length;
-                                }
-                                else {
-                                    index = this.organs.findIndex(organ => organ.id == newOrgan.id);
+                                if (newArticle.id == null) {
+                                    index = this.articles.length;
+                                } else {
+                                    index = this.articles.findIndex(article => article.id == newArticle.id);
                                 }
 
-                                Vue.set(this.organs, index, data.data);
-                                const sorted = this.organs.sort((a, b) => a.title.localeCompare(b.title));
-                                Vue.set(this, 'organs', sorted);
+                                Vue.set(this.articles, index, data.data);
+                                const sorted = this.articles.sort((a, b) => a.title.localeCompare(b.title));
+                                Vue.set(this, 'articles', sorted);
 
                                 Vue.set(this, 'savingSuccess', true);
                                 setTimeout(() => {
@@ -131,25 +137,26 @@ OragnIndex.init = function init() {
                 },
 
                 /**
-                 * Clear new organization
+                 * Clear new articles
                  */
-                clearNewOrgan(data) {
+                clearNewArticle(data) {
                     if (null == data) {
                         data = {
                             id: null,
                             title: null,
-                            city: null
+                            body: null,
+                            type: null
                         };
                     }
 
-                    Vue.set(this, 'newOrgan', data);
+                    Vue.set(this, 'newArticle', data);
                 },
 
                 /**
                  * Show the create form
                  */
                 showCreateForm(data) {
-                    this.clearNewOrgan(data);
+                    this.clearNewArticle(data);
                     this.changeFormMode(this.FORM_MODES.CREATE);
                 },
 
@@ -160,7 +167,8 @@ OragnIndex.init = function init() {
                     const newData = {
                         id: data.id,
                         title: data.title,
-                        city: data.city_id,
+                        body: data.body,
+                        type: data.type_id,
                         oldTitle: data.title
                     };
 
@@ -181,18 +189,18 @@ OragnIndex.init = function init() {
                     this.showLoading();
 
                     /* Load Data */
-                    const organLoader = axios.get(document.pageData.url.organList);
-                    const cityLoader = axios.get(document.pageData.url.cityList);
+                    const articleLoader = axios.get(document.pageData.url.articleList);
+                    const articleTypeLoader = axios.get(document.pageData.url.articleTypeList);
 
-                    Promise.all([organLoader, cityLoader])
+                    Promise.all([articleLoader, articleTypeLoader])
                         .then(res => {
-                            /* organizations */
-                            const organData = res[0];
-                            Vue.set(this, 'organs', organData.data.data);
+                            /* article */
+                            const articleData = res[0];
+                            Vue.set(this, 'articles', articleData.data.data);
 
-                            /* city  */
-                            const cityData = res[1];
-                            Vue.set(this, 'cities', cityData.data);
+                            /* article type  */
+                            const articleTypeData = res[1];
+                            Vue.set(this, 'articleTypes', articleTypeData.data);
 
                             this.hideLoading();
                         });
@@ -209,15 +217,15 @@ OragnIndex.init = function init() {
                 changeFormMode(mode) {
                     switch (mode) {
                         case this.FORM_MODES.LIST:
-                            Vue.set(this, 'pageTitle', 'دستگاه‌های اجرایی');
+                            Vue.set(this, 'pageTitle', 'مطالب');
                             break;
 
                         case this.FORM_MODES.CREATE:
-                            Vue.set(this, 'pageTitle', 'ثبت دستگاه‌ اجرایی');
+                            Vue.set(this, 'pageTitle', 'ثبت مطلب');
                             break;
 
                         case this.FORM_MODES.EDIT:
-                            Vue.set(this, 'pageTitle', 'ویرایش دستگاه اجرایی');
+                            Vue.set(this, 'pageTitle', 'ویرایش مطلب');
                             break;
                     }
 
@@ -236,4 +244,4 @@ OragnIndex.init = function init() {
 };
 
 /* Start Point */
-OragnIndex.init();
+ArticleIndex.init();

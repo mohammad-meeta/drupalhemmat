@@ -1,15 +1,15 @@
 'use strict';
 
 /**
- * Organ Index class
+ * city Index class
  */
-function OragnIndex() {}
-module.exports = OragnIndex;
+function CityIndex() {}
+module.exports = CityIndex;
 
 /**
  * Init funciton
  */
-OragnIndex.init = function init() {
+CityIndex.init = function init() {
     window.v =
         new Vue({
             el: '#app',
@@ -22,9 +22,8 @@ OragnIndex.init = function init() {
                     DELETE: 3
                 },
 
-                organs: [],
                 cities: [],
-                newOrgan: {},
+                newCity: {},
 
                 isLoading: true,
                 formMode: null,
@@ -34,7 +33,7 @@ OragnIndex.init = function init() {
 
             computed: {
                 hasRecord() {
-                    return this.organs.length;
+                    return this.cities.length;
                 },
 
                 isListMode() {
@@ -51,8 +50,8 @@ OragnIndex.init = function init() {
             },
 
             created() {
-                this.clearNewOrgan();
-                this.changeFormMode(this.FORM_MODES.LIST);
+                this.clearNewCity(),
+                    this.changeFormMode(this.FORM_MODES.LIST);
             },
 
             mounted() {
@@ -61,62 +60,60 @@ OragnIndex.init = function init() {
 
             methods: {
                 /**
-                 * Show organization
+                 * Show city
                  */
-                showOrganization(organ) {
-                    const url = document.pageData.url.organShow.replace(`_ID_`, organ.id);
-
+                showCity(city) {
+                    const url = document.pageData.url.cityShow.replace(`_ID_`, city.id);
                     window.location.href = url;
                 },
 
                 /**
-                 * Save new organization data
+                 * Save new city data
                  */
-                saveNewOrgan() {
+                saveNewCity() {
                     this.showLoading();
 
-                    let newOrgan = {
-                        id: this.newOrgan.id,
-                        title: this.newOrgan.title,
-                        city: this.newOrgan.city
+                    let newCity = {
+                        id: this.newCity.id,
+                        title: this.newCity.title
                     };
 
                     let url = "";
                     let method = "";
                     let registerType = "";
 
-                    if (newOrgan.id == null) {
+                    if (newCity.id == null) {
                         registerType = "Registration";
-                        url = document.pageData.url.organStore;
+                        url = document.pageData.url.cityStore;
                         method = "post";
                     } else {
                         registerType = "Update";
-                        url = document.pageData.url.organUpdate.replace("_ID_", newOrgan.id);
+                        url = document.pageData.url.cityUpdate.replace("_ID_", newCity.id);
                         method = "patch";
                     }
-
-                    axios[method](url, newOrgan)
+                    console.log(method);
+                    axios[method](url, newCity)
                         .then(res => {
                             const data = res.data;
 
                             if (data.success) {
                                 let index;
 
-                                if (newOrgan.id == null){
-                                    index = this.organs.length;
-                                }
-                                else {
-                                    index = this.organs.findIndex(organ => organ.id == newOrgan.id);
+                                if (newCity.id == null) {
+                                    index = this.cities.length;
+                                } else {
+                                    index = this.cities.findIndex(city => city.id == newCity.id);
                                 }
 
-                                Vue.set(this.organs, index, data.data);
-                                const sorted = this.organs.sort((a, b) => a.title.localeCompare(b.title));
-                                Vue.set(this, 'organs', sorted);
+                                Vue.set(this.cities, index, data.data);
+                                const sorted = this.cities.sort((a, b) => a.title.localeCompare(b.title));
+                                Vue.set(this, 'cities', sorted);
 
                                 Vue.set(this, 'savingSuccess', true);
                                 setTimeout(() => {
                                     Vue.set(this, 'savingSuccess', false);
                                 }, 2000);
+
                                 this.changeFormMode(this.FORM_MODES.LIST);
                             } else {
                                 alert(`${registerType} failed!`);
@@ -131,26 +128,31 @@ OragnIndex.init = function init() {
                 },
 
                 /**
-                 * Clear new organization
+                 * Clear new city
                  */
-                clearNewOrgan(data) {
+                clearNewCity(data) {
                     if (null == data) {
                         data = {
                             id: null,
                             title: null,
-                            city: null
+                            oldTitle: null
                         };
                     }
 
-                    Vue.set(this, 'newOrgan', data);
+                    Vue.set(this, 'newCity', data);
                 },
 
                 /**
                  * Show the create form
                  */
                 showCreateForm(data) {
-                    this.clearNewOrgan(data);
-                    this.changeFormMode(this.FORM_MODES.CREATE);
+                    this.clearNewCity(data);
+
+                    if (data.id != null) {
+                        this.changeFormMode(this.FORM_MODES.EDIT);
+                    } else {
+                        this.changeFormMode(this.FORM_MODES.CREATE);
+                    }
                 },
 
                 /**
@@ -160,7 +162,6 @@ OragnIndex.init = function init() {
                     const newData = {
                         id: data.id,
                         title: data.title,
-                        city: data.city_id,
                         oldTitle: data.title
                     };
 
@@ -168,30 +169,24 @@ OragnIndex.init = function init() {
                 },
 
                 /**
-                 * Hdie the create form
+                 * Hide the create form
                  */
                 hideCreateForm() {
                     this.changeFormMode(this.FORM_MODES.LIST);
                 },
 
                 /**
-                 * Load data
+                 * Data load
                  */
                 loadData() {
                     this.showLoading();
 
                     /* Load Data */
-                    const organLoader = axios.get(document.pageData.url.organList);
                     const cityLoader = axios.get(document.pageData.url.cityList);
 
-                    Promise.all([organLoader, cityLoader])
+                    Promise.all([cityLoader])
                         .then(res => {
-                            /* organizations */
-                            const organData = res[0];
-                            Vue.set(this, 'organs', organData.data.data);
-
-                            /* city  */
-                            const cityData = res[1];
+                            const cityData = res[0];
                             Vue.set(this, 'cities', cityData.data);
 
                             this.hideLoading();
@@ -207,17 +202,18 @@ OragnIndex.init = function init() {
                 },
 
                 changeFormMode(mode) {
+
                     switch (mode) {
                         case this.FORM_MODES.LIST:
-                            Vue.set(this, 'pageTitle', 'دستگاه‌های اجرایی');
+                            Vue.set(this, 'pageTitle', 'شهرها');
                             break;
 
                         case this.FORM_MODES.CREATE:
-                            Vue.set(this, 'pageTitle', 'ثبت دستگاه‌ اجرایی');
+                            Vue.set(this, 'pageTitle', 'ثبت شهر');
                             break;
 
                         case this.FORM_MODES.EDIT:
-                            Vue.set(this, 'pageTitle', 'ویرایش دستگاه اجرایی');
+                            Vue.set(this, 'pageTitle', 'ویرایش شهر');
                             break;
                     }
 
@@ -232,8 +228,10 @@ OragnIndex.init = function init() {
                     this.loadData();
                 }
             }
+
         });
 };
 
-/* Start Point */
-OragnIndex.init();
+
+/* Start point */
+CityIndex.init();

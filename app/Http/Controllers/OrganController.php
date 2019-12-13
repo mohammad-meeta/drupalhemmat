@@ -88,7 +88,14 @@ class OrganController extends Controller
         $organ['title'] = $request['title'];
         $organ['city_id'] = $request['city'];
         $organ->save();
-        return redirect('/organ/' . $organ->id)->with('success', 'دستگاه اجرایی با موفقیت ویرایش شد.');
+
+        $organ->load('city');
+        $organ = new OrganizationStore($organ);
+
+        return [
+            "success" => !is_null($organ),
+            "data" => $organ
+        ];
     }
 
     /**

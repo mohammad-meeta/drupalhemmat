@@ -6,6 +6,7 @@ use App\Article;
 use App\ArticleType;
 use Auth;
 use Illuminate\Http\Request;
+use App\Http\Resources\ArticleStore;
 use Illuminate\Support\Facades\Redirect;
 
 class ArticleController extends Controller
@@ -17,8 +18,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::all();
-        return view('articles.index', compact('articles'));
+        return view('articles.index');
     }
 
     /**
@@ -42,12 +42,28 @@ class ArticleController extends Controller
     {
         $article = Article::create([
             'title' => $request->title,
+            'body' => $request->body,
+            'user_id' => Auth::user()->id,
+            'type_id' => $request->type
+        ]);
+
+        $article->load('type');
+        $article = new ArticleStore($article);
+
+        return [
+            "success" => !is_null($article),
+            "data" => $article
+        ];
+
+
+    /*   $article = Article::create([
+            'title' => $request->title,
             'type_id' => $request->type,
             'body' => $request->body,
             'user_id' => Auth::user()->id
         ]);
 
-        return redirect()->route('article.index')->with('success', 'مطلب با موفقیت ذخیره شد');
+        return redirect()->route('article.index')->with('success', 'مطلب با موفقیت ذخیره شد');*/
     }
 
     /**
@@ -86,9 +102,21 @@ class ArticleController extends Controller
     {
         $article['title'] = $request['title'];
         $article['type_id'] = $request['type'];
+        $article->save();
+
+        $article->load('articleType');
+        $article = new ArticleStore($article);
+
+        return [
+            "success" => !is_null($article),
+            "data" => $article
+        ];
+
+        /*    $article['title'] = $request['title'];
+        $article['type_id'] = $request['type'];
         $article['body'] = $request['body'];
         $article->save();
-        return redirect('/article/' . $article->id)->with('success', 'مطلب با موفقیت ویرایش شد.');
+        return redirect('/article/' . $article->id)->with('success', 'مطلب با موفقیت ویرایش شد.');*/
     }
 
     /**
@@ -102,5 +130,16 @@ class ArticleController extends Controller
         $article->delete();
         return redirect()->route('article.index')
             ->with('success', 'مطلب ' . $article->title . 'حذف شد.');
+    }
+
+    /**
+     * Get articles list
+     */
+    public function articlesList()
+    {
+        $list = Article::with('articleType')
+            ->paginate(parent::PAGE_SIZE);
+
+        return $list;
     }
 }

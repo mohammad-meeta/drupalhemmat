@@ -11,3 +11,9 @@ Route::get('/organ/list', 'OrganController@organsList')
 
 Route::get('/city/list', 'CityController@citiesList')
     ->name('api.city.list');
+
+Route::get('/article-type/list', 'ArticleTypeController@articleTypesList')
+    ->name('api.article-type.list');
+
+Route::get('/article/list', 'ArticleController@articlesList')
+    ->name('api.article.list');

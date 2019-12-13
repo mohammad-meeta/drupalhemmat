@@ -6,23 +6,24 @@
     <thead>
         <tr>
             <th>عنوان</th>
-            <th>شهرستان</th>
+            <th>نوع مطلب</th>
             <th>عملکردها</th>
         </tr>
     </thead>
     <tbody>
-        <tr v-for="organ in organs" :key="organ.id">
-            <td>@{{ organ.title }}</td>
-            <td>@{{ organ.city.title }}</td>
+        <tr v-for="article in articles" :key="article.id">
+            <td>@{{ article.title }}</td>
+            <td>@{{ article }}</td>
             <td>
-                <a href="#" class="btn btn-primary" @click.prevent="showOrganization(organ)">
+                <a href="#" class="btn btn-primary" @click.prevent="showarticle(article)">
                     مشاهده
                 </a>
 
-                <a href="#" class="btn btn-primary" @click.prevent="showEditForm(organ)">
+                <a href="#" class="btn btn-primary" @click.prevent="showEditForm(article)">
                     ویرایش
                 </a>
             </td>
         </tr>
     </tbody>
 </table>
+

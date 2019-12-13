@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\City;
 use Illuminate\Http\Request;
+use App\Http\Resources\CityStore;
 
 class CityController extends Controller
 {
@@ -14,8 +15,7 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities = City::all();
-        return view('cities.index', compact('cities'));
+        return view('cities.index');
     }
 
     /**
@@ -36,11 +36,16 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
-        $article = City::create([
+        $city = City::create([
             'title' => $request->title
         ]);
+        $city = new CityStore($city);
 
-        return redirect()->route('city.index')->with('success', 'شهر با موفقیت ذخیره شد');
+        return [
+            "success" => !is_null($city),
+            "data" => $city
+        ];
+        //return redirect()->route('city.index')->with('success', 'شهر با موفقیت ذخیره شد');
     }
 
     /**
@@ -76,7 +81,16 @@ class CityController extends Controller
     {
         $city['title'] = $request['title'];
         $city->save();
-        return redirect('/city/' . $city->id)->with('success', 'شهر با موفقیت ویرایش شد.');
+
+
+        $city = new cityStore($city);
+
+        return [
+            "success" => !is_null($city),
+            "data" => $city
+        ];
+
+        //return redirect('/city/' . $city->id)->with('success', 'شهر با موفقیت ویرایش شد.');
     }
 
     /**

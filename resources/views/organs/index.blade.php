@@ -20,6 +20,10 @@
             <div v-if="isCreateMode">
                 @include('organs.create')
             </div>
+
+            <div v-if="isCreateMode || isEditMode">
+                @include('organs.create')
+            </div>
         </div>
     </div>
 @endsection
@@ -29,6 +33,7 @@
         document.pageData = {
             url: {
                 organStore: '{{ route('organ.store') }}',
+                organUpdate: '{{ route('organ.update', '_ID_') }}',
                 organShow: '{{ route('organ.show', '_ID_') }}',
                 organList: '{{ route('api.organ.list') }}',
                 cityList: '{{ route('api.city.list') }}'
