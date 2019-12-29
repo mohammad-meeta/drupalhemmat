@@ -9,7 +9,10 @@ app/storage/
 # Laravel 5 & Lumen specific
 public/storage
 public/hot
+<<<<<<< HEAD
 public/
+=======
+>>>>>>> 635a0d4f3e20a4ff697c0ff4ebbd2bacff9bd095
 storage/*.key
 .env.*.php
 .env.php
