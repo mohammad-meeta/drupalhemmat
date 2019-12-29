@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\File;
 
 class Article extends Model
 {
@@ -10,7 +11,8 @@ class Article extends Model
         'user_id',
         'type_id',
         'title',
-        'body'
+        'body',
+        'status'
     ];
 
     /**
@@ -21,8 +23,39 @@ class Article extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function articleType()
+    /**
+     * Article type
+     */
+    public function type()
     {
         return $this->belongsTo(ArticleType::class);
+    }
+
+    /**
+     * files
+     */
+    public function files()
+    {
+        return $this->belongsToMany(File::class);
+    }
+
+    /**
+     * Add an attachment to this article
+     */
+    public function addAttachment($file)
+    {
+        $fileName = $file->store('files');
+        $ext = $file->getClientOriginalExtension();
+
+        /* New file */
+        $newFile = File::create([
+            "original_name" => $file->getClientOriginalName(),
+            "name" => $fileName,
+            "extension" => $ext
+        ]);
+
+        $this->files()->attach($newFile->id);
+
+        return $newFile;
     }
 }

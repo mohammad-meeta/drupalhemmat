@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Article;
 use App\ArticleType;
+use App\File;
 use Auth;
 use Illuminate\Http\Request;
 use App\Http\Resources\ArticleStore;
@@ -27,10 +28,7 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        $articleTypes = ArticleType::pluck('title', 'id');
-        return view('articles.create', compact('articleTypes', $articleTypes));
-    }
+    { }
 
     /**
      * Store a newly created resource in storage.
@@ -44,10 +42,12 @@ class ArticleController extends Controller
             'title' => $request->title,
             'body' => $request->body,
             'user_id' => Auth::user()->id,
-            'type_id' => $request->type
+            'type_id' => $request->type,
+            'status' => $request->status
         ]);
 
         $article->load('type');
+        $article->load('files');
         $article = new ArticleStore($article);
 
         return [
@@ -56,7 +56,7 @@ class ArticleController extends Controller
         ];
 
 
-    /*   $article = Article::create([
+        /*   $article = Article::create([
             'title' => $request->title,
             'type_id' => $request->type,
             'body' => $request->body,
@@ -74,7 +74,12 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        return view('articles.show', compact('article'));
+        $article->load(['type', 'files']);
+
+        return [
+            "success" => true,
+            "data" => $article
+        ];
     }
 
     /**
@@ -84,12 +89,7 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Article $article)
-    {
-        $articleTypes = ArticleType::pluck('title', 'id');
-        //$articleType = ArticleType::where('id', $article->type_id)->get();
-        // dd($articleTypes);
-        return view('articles.edit', compact('article', 'articleTypes'));
-    }
+    { }
 
     /**
      * Update the specified resource in storage.
@@ -102,9 +102,12 @@ class ArticleController extends Controller
     {
         $article['title'] = $request['title'];
         $article['type_id'] = $request['type'];
+        $article['body'] = $request['body'];
+        $article['status'] = $request['status'];
         $article->save();
 
-        $article->load('articleType');
+        $article->load('type');
+
         $article = new ArticleStore($article);
 
         return [
@@ -137,9 +140,62 @@ class ArticleController extends Controller
      */
     public function articlesList()
     {
-        $list = Article::with('articleType')
+        $list = Article::with(['type', 'files'])
             ->paginate(parent::PAGE_SIZE);
 
         return $list;
+    }
+
+    /**
+     * Get documents center list
+     */
+    public function documentsCenterList()
+    {
+        $condition = [
+            ['type_id', '1'],
+            ['status', true]
+        ];
+
+        $list = Article::with('type')
+            ->where($condition)
+            ->paginate(parent::PAGE_SIZE);
+
+        return $list;
+    }
+
+    /**
+     * Add an attachment to a article
+     */
+    public function addAttachment(Request $request, Article $article)
+    {
+        /*  TODO: DATA VALIDATION */
+
+        $file = $request->file;
+        $newFile = $article->addAttachment($file);
+
+        return [
+            "success" => true,
+            "data" => $newFile
+        ];
+    }
+
+    /**
+     * Store file
+     */
+    public function storeFile(Request $request)
+    {
+        $data = [
+            'original_name' => $request->getClientOriginalName(),
+            'name' => $request->name,
+            'extension' => $request->extension
+        ];
+
+        $file = File::create($data);
+        $file = new FileStore($file);
+
+        return [
+            "success" => !is_null($file),
+            "data" => $file
+        ];
     }
 }

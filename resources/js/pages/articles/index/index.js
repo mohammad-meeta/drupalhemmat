@@ -1,23 +1,27 @@
 'use strict';
 
+import ArticleList from '@components/pages/articles/list.vue';
+import ArticleCreate from '@components/pages/articles/create.vue';
+import ArticleDetail from '@components/pages/articles/detail.vue';
+
 /**
  * Article Index class
  */
 function ArticleIndex() {}
-module.exports = ArticleIndex;
+export default ArticleIndex;
 
 /**
  * Init function
  */
 ArticleIndex.init = function init() {
-    import ArticleList from '@components/pages/articles/list.vue';
-
     window.v =
         new Vue({
             el: '#app',
 
             components: {
-                ArticleList
+                ArticleList,
+                ArticleCreate,
+                ArticleDetail
             },
 
             data: {
@@ -25,12 +29,9 @@ ArticleIndex.init = function init() {
                     LIST: 0,
                     CREATE: 1,
                     EDIT: 2,
-                    DELETE: 3
+                    DELETE: 3,
+                    DETAIL: 4
                 },
-
-                articles: [],
-                articleTypes: [],
-                newArticle: {},
 
                 isLoading: true,
                 formMode: null,
@@ -39,13 +40,7 @@ ArticleIndex.init = function init() {
             },
 
             computed: {
-                hasRecord() {
-                    return this.articles.length;
-                },
-
-                isListMode() {
-                    return this.formMode == this.FORM_MODES.LIST;
-                },
+                isListMode: state => state.formMode == state.FORM_MODES.LIST,
 
                 isCreateMode() {
                     return this.formMode == this.FORM_MODES.CREATE;
@@ -53,110 +48,67 @@ ArticleIndex.init = function init() {
 
                 isEditMode() {
                     return this.formMode == this.FORM_MODES.EDIT;
+                },
+
+                isDetailMode() {
+                    return this.formMode == this.FORM_MODES.DETAIL;
                 }
             },
 
             created() {
-                this.clearNewArticle();
                 this.changeFormMode(this.FORM_MODES.LIST);
-            },
-
-            mounted() {
-                this.init();
+                this.hideLoading();
             },
 
             methods: {
                 /**
+                 * On detail form's back button pressed
+                 */
+                cancelDetailForm(){
+                    this.changeFormMode(this.FORM_MODES.LIST);
+                },
+
+                /**
+                 * On edit article result
+                 * @param {Object} result
+                 */
+                editArticle(result) {
+                    if (result.success) {
+                        result.data.type_id = result.data.type.id;
+
+                        this.$refs.articleList.updateArticle(result.data);
+                        this.changeFormMode(this.FORM_MODES.LIST);
+                    } else {
+                        alert('Update article failed!');
+                    }
+                },
+
+                /**
+                 * New article saved event
+                 */
+                newArticle(result) {
+                    if (result.success) {
+                        this.$refs.articleList.insertNewArticle(result.data);
+                        this.changeFormMode(this.FORM_MODES.LIST);
+                    } else {
+                        alert('Register new record failed!');
+                    }
+                },
+
+                /**
                  * Show article
                  */
                 showArticle(article) {
-                    const url = document.pageData.url.articleShow.replace(`_ID_`, article.id);
-
-                    window.location.href = url;
-                },
-
-                /**
-                 * Save new article data
-                 */
-                saveNewArticle() {
-                    this.showLoading();
-
-                    let newArticle = {
-                        id: this.newArticle.id,
-                        title: this.newArticle.title,
-                        body: this.newArticle.body,
-                        type: this.newArticle.type
-                    };
-
-                    let url = "";
-                    let method = "";
-                    let registerType = "";
-
-                    if (newArticle.id == null) {
-                        registerType = "Registration";
-                        url = document.pageData.url.articleStore;
-                        method = "post";
-                    } else {
-                        registerType = "Update";
-                        url = document.pageData.url.articleUpdate.replace("_ID_", newArticle.id);
-                        method = "patch";
-                    }
-
-                    axios[method](url, newArticle)
-                        .then(res => {
-                            const data = res.data;
-
-                            if (data.success) {
-                                let index;
-
-                                if (newArticle.id == null) {
-                                    index = this.articles.length;
-                                } else {
-                                    index = this.articles.findIndex(article => article.id == newArticle.id);
-                                }
-
-                                Vue.set(this.articles, index, data.data);
-                                const sorted = this.articles.sort((a, b) => a.title.localeCompare(b.title));
-                                Vue.set(this, 'articles', sorted);
-
-                                Vue.set(this, 'savingSuccess', true);
-                                setTimeout(() => {
-                                    Vue.set(this, 'savingSuccess', false);
-                                }, 2000);
-                                this.changeFormMode(this.FORM_MODES.LIST);
-                            } else {
-                                alert(`${registerType} failed!`);
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err);
-                        })
-                        .then(() => {
-                            this.hideLoading();
-                        });
-                },
-
-                /**
-                 * Clear new articles
-                 */
-                clearNewArticle(data) {
-                    if (null == data) {
-                        data = {
-                            id: null,
-                            title: null,
-                            body: null,
-                            type: null
-                        };
-                    }
-
-                    Vue.set(this, 'newArticle', data);
+                    this.$refs.articleDetail.loadArticle(article.id);
+                    this.changeFormMode(this.FORM_MODES.DETAIL);
                 },
 
                 /**
                  * Show the create form
                  */
                 showCreateForm(data) {
-                    this.clearNewArticle(data);
+                    CKEDITOR.instances.editor.setData((data || {}).body || '');
+                    this.$refs.articleCreate.clearNewArticle(data);
                     this.changeFormMode(this.FORM_MODES.CREATE);
                 },
 
@@ -168,8 +120,9 @@ ArticleIndex.init = function init() {
                         id: data.id,
                         title: data.title,
                         body: data.body,
-                        type: data.type_id,
-                        oldTitle: data.title
+                        articleType: data.type_id,
+                        oldTitle: data.title,
+                        status: data.status
                     };
 
                     this.showCreateForm(newData);
@@ -180,30 +133,6 @@ ArticleIndex.init = function init() {
                  */
                 hideCreateForm() {
                     this.changeFormMode(this.FORM_MODES.LIST);
-                },
-
-                /**
-                 * Load data
-                 */
-                loadData() {
-                    this.showLoading();
-
-                    /* Load Data */
-                    const articleLoader = axios.get(document.pageData.url.articleList);
-                    const articleTypeLoader = axios.get(document.pageData.url.articleTypeList);
-
-                    Promise.all([articleLoader, articleTypeLoader])
-                        .then(res => {
-                            /* article */
-                            const articleData = res[0];
-                            Vue.set(this, 'articles', articleData.data.data);
-
-                            /* article type  */
-                            const articleTypeData = res[1];
-                            Vue.set(this, 'articleTypes', articleTypeData.data);
-
-                            this.hideLoading();
-                        });
                 },
 
                 showLoading() {
@@ -237,7 +166,6 @@ ArticleIndex.init = function init() {
                  */
                 init() {
                     this.changeFormMode(this.FORM_MODES.LIST);
-                    this.loadData();
                 }
             }
         });

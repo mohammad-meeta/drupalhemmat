@@ -1,77 +1,99 @@
-<template>
-  <div>
-    <h2 v-if="! hasRecord">اطلاعاتی وجود ندارد</h2>
+<template lang="pug">
+div
+    h2(v-if='! hasRecord') اطلاعاتی وجود ندارد
 
-    <table class="pp-striped-table" v-if="hasRecord">
-      <thead>
-        <tr>
-          <th>عنوان</th>
-          <th>نوع مطلب</th>
-          <th>عملکردها</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="article in articles" :key="article.id">
-          <td>{{ article.title }}</td>
-          <td>{{ article.body }}</td>
-          <td>
-            <a href="#" class="btn btn-primary" @click.prevent="showarticle(article)">مشاهده</a>
-
-            <a href="#" class="btn btn-primary" @click.prevent="showEditForm(article)">ویرایش</a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    table.pp-striped-table(v-if='hasRecord')
+        thead
+            tr
+                th عنوان
+                th نوع مطلب
+                th عملکردها
+        tbody
+            tr(v-for='article in articles', :key='article.id')
+                td {{ article.title }}
+                td {{ article.type.title }}
+                td
+                    a.btn.btn-primary(href='#', @click.prevent='showArticle(article)') مشاهده
+                    a.btn.btn-primary(href='#', @click.prevent='showEditForm(article)') ویرایش
 </template>
 
 <script>
 export default {
-  name: "ArticleList",
+    name: "ArticleList",
 
-  data: () => ({
-    articles: []
-  }),
+    data: () => ({
+        articles: []
+    }),
 
-  props: {
-    url: {
-      type: String,
-      default: ""
-    }
-  },
+    props: {
+        url: {
+            type: String,
+            default: ""
+        }
+    },
 
-  computed: {
-    /**
-     * Check for records exists
-     */
-    hasRecord() {
-      return (this.data || []).length;
-    }
-  },
+    computed: {
+        /**
+         * Check for records exists
+         */
+        hasRecord() {
+            return (this.articles || []).length;
+        }
+    },
 
-  created() {
-    console.log("article-list created");
-  },
-
-  mounted() {
-    console.log("article-list mounted");
-  },
-
-  methods: {
     /**
      * Load articles
      */
-    loadArticle() {
-      axios.get(url).then(res => {
-        this.articles = res.data;
-      });
+    created() {
+        this.loadArticle();
+    },
+
+    methods: {
+        /**
+         * Load articles
+         */
+        loadArticle() {
+            axios.get(this.url).then(res => {
+                const data = res.data;
+
+                Vue.set(this, "articles", data.data || []);
+            });
+        },
+
+        /**
+         * Show article content
+         */
+        showArticle(article) {
+            this.$emit('on-show-article', article);
+        },
+
+        /**
+         * Edit an article
+         */
+        showEditForm(article) {
+            this.$emit('on-edit-article', article);
+        },
+
+        /**
+         * Insert new article
+         */
+        insertNewArticle(article) {
+            Vue.set(this.articles, this.articles.length, article);
+        },
+
+        /**
+         * Update an article
+         */
+        updateArticle(article) {
+            let index = this.articles.findIndex(item => item.id == article.id);
+
+            if (index > -1) {
+                Vue.set(this.articles, index, article);
+            }
+        }
     }
-  }
 };
 </script>
 
-<style lang="sass" scoped>
-    .my-row {
-        border: 1px solid red;
-    }
+<style scoped>
 </style>

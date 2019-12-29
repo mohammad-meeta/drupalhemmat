@@ -17,7 +17,7 @@
 
     <div class="form-group">
         <label for="body">توضیحات</label>
-        <textarea class="form-control" rows="3" required v-model="newArticle.body"></textarea>
+        <textarea id="editor" class="form-control cke_rtl" rows="3" required v-model="newArticle.body"></textarea>
     </div>
 
         <div class="form-group">

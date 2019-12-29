@@ -1,39 +1,39 @@
 {
-  "_from": "ckeditor4",
-  "_id": "ckeditor4@4.13.0",
+  "_args": [
+    [
+      "github:ckeditor/ckeditor4-releases#full/latest",
+      "/home/mohammad/Documents/Projects/olompezeshki/hemmat"
+    ]
+  ],
+  "_from": "github:ckeditor/ckeditor4-releases#full/latest",
+  "_id": "ckeditor4@github:ckeditor/ckeditor4-releases#ca793fa3217a61d24c0029e865f051ddf74fa368",
   "_inBundle": false,
-  "_integrity": "sha512-1Z1PIEI4U7ud8rntUYhWMkZGaX/MPixmlkcyQ4+4kO77ncWTO0sOmpDitrCRbUwRP0nppzGOGHtVjMF1G3fXUg==",
+  "_integrity": "",
   "_location": "/ckeditor4",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "ckeditor4",
-    "name": "ckeditor4",
-    "escapedName": "ckeditor4",
-    "rawSpec": "",
-    "saveSpec": null,
-    "fetchSpec": "latest"
+    "type": "git",
+    "raw": "github:ckeditor/ckeditor4-releases#full/latest",
+    "rawSpec": "github:ckeditor/ckeditor4-releases#full/latest",
+    "saveSpec": "github:ckeditor/ckeditor4-releases#full/latest",
+    "fetchSpec": null,
+    "gitCommittish": "full/latest"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/ckeditor4/-/ckeditor4-4.13.0.tgz",
-  "_shasum": "18dcc38ed7de8caadb5e500da88eb932bd74ce94",
-  "_spec": "ckeditor4",
+  "_resolved": "github:ckeditor/ckeditor4-releases#ca793fa3217a61d24c0029e865f051ddf74fa368",
+  "_spec": "github:ckeditor/ckeditor4-releases#full/latest",
   "_where": "/home/mohammad/Documents/Projects/olompezeshki/hemmat",
   "author": {
     "name": "CKSource",
-    "url": "http://cksource.com/"
+    "url": "https://cksource.com/"
   },
   "bugs": {
     "url": "https://github.com/ckeditor/ckeditor4/issues"
   },
-  "bundleDependencies": false,
-  "deprecated": false,
   "description": "JavaScript WYSIWYG web text editor.",
-  "homepage": "http://ckeditor.com",
+  "homepage": "https://ckeditor.com/ckeditor-4/",
   "keywords": [
     "ckeditor4",
     "ckeditor",
@@ -52,5 +52,5 @@
     "type": "git",
     "url": "git+https://github.com/ckeditor/ckeditor4-releases.git"
   },
-  "version": "4.13.0"
+  "version": "4.13.1"
 }

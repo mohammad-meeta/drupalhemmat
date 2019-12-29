@@ -16,12 +16,11 @@ class ArticleStore extends JsonResource
     {
         return [
             "id"   => $this->id,
-            "title"   => $this->title,
+            "title" => $this->title,
             "body" => $this->body,
-            "type"   => [
-                "id" => $this->type_id,
-            ],
+            "type" => $this->whenLoaded('type'),
+            "status" => $this->status
         ];
-    //    return parent::toArray($request);
+        //    return parent::toArray($request);
     }
 }

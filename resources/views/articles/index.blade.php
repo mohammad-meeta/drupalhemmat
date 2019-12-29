@@ -13,29 +13,32 @@
                 @include('articles.header')
             </div>
 
-            {{-- <article-list v-if="isListMode"></article-list> --}}
-            <div v-if="isListMode">
-                @include('articles.list')
-            </div>
+            <article-detail v-show="isDetailMode"
+                ref="articleDetail"
+                show-url="{{ route('article.show', '_ID_') }}"
+                @on-back-pressed="cancelDetailForm"></article-detail>
 
-            <div v-if="isCreateMode || isEditMode">
-                @include('articles.create')
-            </div>
+            <article-list ref="articleList" v-show="isListMode" url="{{ route('api.article.list') }}"
+                @on-edit-article="showEditForm"
+                @on-show-article="showArticle">
+            </article-list>
+
+            <article-create ref="articleCreate" v-show="isCreateMode || isEditMode"
+                upload-url="{{ route('article.file-upload', '_ID_') }}"
+                store-url="{{ route('article.store') }}"
+                update-url="{{ route('article.update', '_ID_') }}"
+                show-url="{{ route('article.show', '_ID_') }}"
+                article-types-url="{{ route('api.article-type.list') }}"
+                @on-new-article="newArticle"
+                @on-edit-article="editArticle"
+                @on-cancel-create="hideCreateForm"
+                ></article-create>
         </div>
     </div>
 @endsection
 
 @section('scripts')
-    <script>
-        document.pageData = {
-            url: {
-                articleStore: '{{ route('article.store') }}',
-                articleUpdate: '{{ route('article.update', '_ID_') }}',
-                articleShow: '{{ route('article.show', '_ID_') }}',
-                articleList: '{{ route('api.article.list') }}',
-                articleTypeList: '{{ route('api.article-type.list') }}'
-            }
-        };
-    </script>
     <script defer src="{{ mix('js/pages/articles/index/index.js') }}"></script>
+    <script defer src="{{ mix('js/pages/articles/edit.js') }}"></script>
+    <script defer src="{{ mix('js/ckeditor/ckeditor.js') }}"></script>
 @endsection
