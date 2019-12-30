@@ -41,15 +41,23 @@ export default {
         /**
          * Load an article detail
          */
-        loadArticle(articleId) {
-            const url = this.showUrl.replace(`_ID_`, articleId);
+        loadArticle(articleId, returnAsValue = false) {
+            return new Promise((resolve, reject) => {
+                const url = this.showUrl.replace(`_ID_`, articleId);
 
-            axios.get(url).then(res => {
-                const data = res.data;
+                axios.get(url).then(res => {
+                    const data = res.data;
 
-                if (data.success) {
-                    Vue.set(this, "article", data.data);
-                }
+                    if (returnAsValue) {
+                        resolve(data);
+                    } else {
+                        if (data.success) {
+                            Vue.set(this, "article", data.data);
+                        }
+
+                        resolve();
+                    }
+                });
             });
         }
     }

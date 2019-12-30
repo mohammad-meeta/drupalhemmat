@@ -14,7 +14,7 @@ form(method='POST', action='/article')
         <textarea class="form-control" id="editor" name="editor" ref='editor' v-model="newArticle.title"></textarea>
     .form-group
         label(for="fileUpload") پیوست فایل
-        file-upload(ref="fileUpload", :upload-url="articleUploadUrl")
+        file-upload(ref="fileUpload", :upload-url="articleUploadUrl", @on-file-remove="articleFileRemove")
 
     .form-group.custom-control.custom-switch
         input#switch1.custom-control-input(type='checkbox', checked,
@@ -42,7 +42,7 @@ export default {
         attachments: [],
         percentCompleted: 0,
         data: {},
-        articleUploadUrl: ""
+        articleUploadUrl: "",
     }),
 
     props: {
@@ -82,6 +82,17 @@ export default {
 
     methods: {
         /**
+         * Remove file
+         */
+        articleFileRemove(payload) {
+            const file = payload.file;
+
+            if (file.id){
+                Vue.set(this.newArticle.deletedFiles, this.newArticle.deletedFiles.length, file.id);
+            }
+        },
+
+        /**
          * Cancel create article
          */
         cancelCreateArticle() {
@@ -113,7 +124,8 @@ export default {
                 title: this.newArticle.title,
                 body: CKEDITOR.instances.editor.getData(),
                 type: this.newArticle.articleType,
-                status: this.newArticle.status
+                status: this.newArticle.status,
+                deletedFiles: this.newArticle.deletedFiles
             };
 
             let url = "";
@@ -156,6 +168,9 @@ export default {
                 });
         },
 
+        /**
+         * Upload files
+         */
         async uploadFiles(data) {
             data = data.data;
             const id = data.id;
@@ -167,16 +182,17 @@ export default {
                 this.uploadUrl.replace("_ID_", id)
             );
 
-
             const files = fileUpload.getFiles();
 
             for (let i = 0; i < files.length; ++i) {
                 const file = files[i];
 
-                try {
-                    const res = await fileUpload.uploadFile(i);
-                } catch (err) {
-                    console.log(err);
+                if ((file.size || 0) > 0) {
+                    try {
+                        const res = await fileUpload.uploadFile(i);
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
             }
         },
@@ -185,7 +201,7 @@ export default {
          * Clear new articles
          */
         clearNewArticle(data) {
-            this.$refs.fileUpload.resetFiles();
+            this.$refs.fileUpload.resetFiles((data || {}).files || []);
 
             if (null == data) {
                 data = {
@@ -196,6 +212,8 @@ export default {
                     status: null
                 };
             }
+            data.deletedFiles = [];
+
             if (data.articleType == null && this.articleTypes.length > 0) {
                 // this.$refs.uploadFile.resetFiles();
                 data.articleType = this.articleTypes[0].id;

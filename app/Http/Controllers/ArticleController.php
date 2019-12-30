@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Article;
-use App\ArticleType;
 use App\File;
 use Auth;
 use Illuminate\Http\Request;
 use App\Http\Resources\ArticleStore;
-use Illuminate\Support\Facades\Redirect;
+use App\Http\Resources\ArticleResource;
+use App\Http\Resources\ArticleCollection;
+
 
 class ArticleController extends Controller
 {
@@ -75,6 +76,7 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $article->load(['type', 'files']);
+        $article = new ArticleResource($article);
 
         return [
             "success" => true,
@@ -106,7 +108,9 @@ class ArticleController extends Controller
         $article['status'] = $request['status'];
         $article->save();
 
-        $article->load('type');
+        $article->files()->detach($request->deletedFiles);
+
+        $article->load(['type', 'files']);
 
         $article = new ArticleStore($article);
 
@@ -141,7 +145,10 @@ class ArticleController extends Controller
     public function articlesList()
     {
         $list = Article::with(['type', 'files'])
-            ->paginate(parent::PAGE_SIZE);
+                ->select([ 'id', \DB::raw("'' as body"), 'title', 'status', 'type_id' ])
+                ->paginate(parent::PAGE_SIZE);
+
+        $list = new ArticleCollection($list);
 
         return $list;
     }

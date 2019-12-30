@@ -70,7 +70,21 @@ export default {
             });
         },
 
+        /**
+         * File remove
+         */
         removeFile(file, index) {
+            if (!confirm("Are you sure?")) {
+                return;
+            }
+
+            const data = {
+                file: this.files[index],
+                index
+            };
+
+            this.$emit("on-file-remove", data);
+
             Vue.delete(this.files, index);
         },
 

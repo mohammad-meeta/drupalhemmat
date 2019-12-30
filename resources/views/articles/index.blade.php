@@ -39,6 +39,5 @@
 
 @section('scripts')
     <script defer src="{{ mix('js/pages/articles/index/index.js') }}"></script>
-    <script defer src="{{ mix('js/pages/articles/edit.js') }}"></script>
     <script defer src="{{ mix('js/ckeditor/ckeditor.js') }}"></script>
 @endsection

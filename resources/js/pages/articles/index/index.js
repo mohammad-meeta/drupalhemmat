@@ -64,7 +64,7 @@ ArticleIndex.init = function init() {
                 /**
                  * On detail form's back button pressed
                  */
-                cancelDetailForm(){
+                cancelDetailForm() {
                     this.changeFormMode(this.FORM_MODES.LIST);
                 },
 
@@ -115,17 +115,10 @@ ArticleIndex.init = function init() {
                 /**
                  * Show the edit form
                  */
-                showEditForm(data) {
-                    const newData = {
-                        id: data.id,
-                        title: data.title,
-                        body: data.body,
-                        articleType: data.type_id,
-                        oldTitle: data.title,
-                        status: data.status
-                    };
+                async showEditForm(data) {
+                    const articleData = await this.$refs.articleDetail.loadArticle(data.id, true);
 
-                    this.showCreateForm(newData);
+                    this.showCreateForm(articleData.data);
                 },
 
                 /**
