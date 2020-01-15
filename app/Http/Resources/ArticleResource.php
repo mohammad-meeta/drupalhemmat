@@ -22,6 +22,8 @@ class ArticleResource extends JsonResource
             "status" => $this->status,
             "type" => $this->type,
             "type_id" => $this->type_id,
+            "document_category" => $this->document_category,
+            "document_category_id" => $this->document_category_id,
             "files" => new FileCollection($this->files)
         ];
     }

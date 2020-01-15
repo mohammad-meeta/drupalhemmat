@@ -7,10 +7,21 @@ Auth::routes();
 
 Route::get('/', 'HomeController@welcome')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 
-Route::get('/article/documents-center', 'ArticleController@documentsCenterList')
+Route::get('/article/documents-center', 'ArticleController@documentsCenter')
     ->name('article.documents-center');
+
 Route::resource('article-type', 'ArticleTypeController');
+
+Route::resource('document-category', 'DocumentCategoryController');
+
+Route::resource('monitoring', 'MonitoringController');
+Route::resource('indicator', 'IndicatorController');
+Route::resource('indicator-category', 'IndicatorCategoryController');
+
+Route::resource('province', 'ProvinceController');
+
 Route::resource('article', 'ArticleController');
 
 

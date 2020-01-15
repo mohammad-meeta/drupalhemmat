@@ -53,6 +53,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get indicators of user
+     */
+    public function monitorings()
+    {
+        return $this->hasMany(Monitoring::class);
+    }
+
+    /**
      * Get Roles of user
      */
     public function roles()

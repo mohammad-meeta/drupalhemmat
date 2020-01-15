@@ -29,6 +29,7 @@
                 update-url="{{ route('article.update', '_ID_') }}"
                 show-url="{{ route('article.show', '_ID_') }}"
                 article-types-url="{{ route('api.article-type.list') }}"
+                document-categories-url="{{ route('api.document-category.list') }}"
                 @on-new-article="newArticle"
                 @on-edit-article="editArticle"
                 @on-cancel-create="hideCreateForm"
@@ -38,6 +39,6 @@
 @endsection
 
 @section('scripts')
-    <script defer src="{{ mix('js/pages/articles/index/index.js') }}"></script>
-    <script defer src="{{ mix('js/ckeditor/ckeditor.js') }}"></script>
+<script defer src="{{ mix('js/ckeditor/ckeditor.js') }}"></script>
+<script defer src="{{ mix('js/pages/articles/index/index.js') }}"></script>
 @endsection

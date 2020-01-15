@@ -10,6 +10,7 @@ class Article extends Model
     protected $fillable = [
         'user_id',
         'type_id',
+        'document_category_id',
         'title',
         'body',
         'status'
@@ -29,6 +30,14 @@ class Article extends Model
     public function type()
     {
         return $this->belongsTo(ArticleType::class);
+    }
+
+    /**
+     * Article document category
+     */
+    public function documentCategory()
+    {
+        return $this->belongsTo(DocumentCategory::class);
     }
 
     /**

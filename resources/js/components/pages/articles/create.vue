@@ -9,6 +9,13 @@ form(method='POST', action='/article')
         select.form-control(required='', v-model='newArticle.articleType' )
             option(v-for='articleType in articleTypes', :key='articleType.id', :value='articleType.id')
                 | {{ articleType.title }}
+
+    .form-group
+        label(for='documentCategory') دسته بندی اسناد
+        select.form-control(required='', v-model='newArticle.documentCategory' )
+            option(v-for='documentCategory in documentCategories', :key='documentCategory.id', :value='documentCategory.id')
+                | {{ documentCategory.title }}
+
     .form-group
         label(for='editor') توضیحات
         <textarea class="form-control" id="editor" name="editor" ref='editor' v-model="newArticle.title"></textarea>
@@ -39,6 +46,7 @@ export default {
     data: () => ({
         newArticle: {},
         articleTypes: [],
+        documentCategories: [],
         attachments: [],
         percentCompleted: 0,
         data: {},
@@ -67,6 +75,11 @@ export default {
         },
 
         articleTypesUrl: {
+            type: String,
+            default: ""
+        },
+
+        documentCategoriesUrl: {
             type: String,
             default: ""
         }
@@ -100,22 +113,6 @@ export default {
         },
 
         /**
-         * Get the selected type data
-         */
-        selectedArticle(articleType) {
-            let result = {
-                id: articleType,
-                title: ""
-            };
-
-            result.title = this.articleTypes.find(
-                x => x.id == articleType
-            ).title;
-
-            return result;
-        },
-
-        /**
          * Save new article data
          */
         saveNewArticle() {
@@ -124,6 +121,7 @@ export default {
                 title: this.newArticle.title,
                 body: CKEDITOR.instances.editor.getData(),
                 type: this.newArticle.articleType,
+                documentCategory: this.newArticle.documentCategory,
                 status: this.newArticle.status,
                 deletedFiles: this.newArticle.deletedFiles
             };
@@ -209,6 +207,7 @@ export default {
                     title: null,
                     body: null,
                     articleType: null,
+                    documentCategory: null,
                     status: null
                 };
             }
@@ -219,6 +218,11 @@ export default {
                 data.articleType = this.articleTypes[0].id;
             }
 
+            if (data.documentCategory == null && this.documentCategories.length > 0) {
+                // this.$refs.uploadFile.resetFiles();
+                data.documentCategory = this.documentCategories[0].id;
+            }
+
             Vue.set(this, "newArticle", data);
         },
 
@@ -226,6 +230,7 @@ export default {
          * Load articles types
          */
         loadArticleTypes() {
+            console.log(this.articleTypesUrl);
             axios
                 .get(this.articleTypesUrl)
                 .then(res => {
@@ -237,10 +242,26 @@ export default {
         },
 
         /**
+         * Load document categories
+         */
+        loadDocumentCategories() {
+            console.log(this.documentCategoriesUrl);
+            axios
+                .get(this.documentCategoriesUrl)
+                .then(res => {
+                    const data = res.data;
+
+                    Vue.set(this, "documentCategories", data);
+                })
+                .catch(err => console.error(err));
+        },
+
+        /**
          * Initialization
          */
         init() {
             this.loadArticleTypes();
+            this.loadDocumentCategories();
         }
     }
 };

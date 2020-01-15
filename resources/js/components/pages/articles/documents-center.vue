@@ -1,28 +1,31 @@
 <template lang="pug">
 div
-    h2(v-if='! hasRecord') اطلاعاتی وجود ندارد
+    h2(v-if='(! hasRecord)') اطلاعاتی وجود ندارد
 
-    table.pp-striped-table(v-if='hasRecord')
-        thead
-            tr
-                th عنوان
-                th نوع مطلب
-                th عملکردها
-        tbody
-            tr(v-for='article in articles', :key='article.id')
-                td {{ article.title }}
-                td {{ article.type.title }}
-                td
-                    a.btn.btn-primary(href='#', @click.prevent='showArticle(article)') مشاهده
-                    a.btn.btn-primary(href='#', @click.prevent='showEditForm(article)') ویرایش
+
+    .itemsboxes(
+            v-for='article in documentCategories', :v-key='article'
+        )
+        h2.item-category.pt-5.pb-2.text-center {{ article.title }}
+        .itemsbox.p-5.m-5
+            .itembox.p-3.d-flex.justify-content-between.align-items-center(
+                v-for="item in article.data", :v-key="item.id"
+                )
+                .itembox-title
+                    | {{item.title}}
+
+                .itembox-link.d-flex
+                    a.linkbtn.d-flex.align-items-center(href='#', @click.prevent='showArticle(item)')
+                        .linktext.ml-3 مشاهده
+                        .linkicon
 </template>
 
 <script>
 module.exports = {
-    name: "ArticleList",
-
+    name: "DocumentsCenter",
     data: () => ({
-        articles: []
+        articles: [],
+        documents: []
     }),
 
     props: {
@@ -36,8 +39,31 @@ module.exports = {
         /**
          * Check for records exists
          */
-        hasRecord() {
-            return (this.articles || []).length;
+        hasRecord: state => (state.articles || []).length,
+
+        documentCategories() {
+            let result = {};
+
+            this.articles.forEach(article => {
+                const category = article.document_category.title;
+
+                if (result[category] == null) {
+                    result[category] = [];
+                }
+
+                result[category].push(article);
+            });
+
+            /* Convert to array */
+            let resultArray = [];
+            Object.keys(result || {}).map(key =>
+                resultArray.push({
+                    title: key,
+                    data: result[key]
+                })
+            );
+
+            return resultArray;
         }
     },
 
@@ -55,7 +81,6 @@ module.exports = {
         loadArticle() {
             axios.get(this.url).then(res => {
                 const data = res.data;
-
                 Vue.set(this, "articles", data.data || []);
             });
         },
@@ -65,32 +90,8 @@ module.exports = {
          */
         showArticle(article) {
             this.$emit('on-show-article', article);
-        },
-
-        /**
-         * Edit an article
-         */
-        showEditForm(article) {
-            this.$emit('on-edit-article', article);
-        },
-
-        /**
-         * Insert new article
-         */
-        insertNewArticle(article) {
-            Vue.set(this.articles, this.articles.length, article);
-        },
-
-        /**
-         * Update an article
-         */
-        updateArticle(article) {
-            let index = this.articles.findIndex(item => item.id == article.id);
-
-            if (index > -1) {
-                Vue.set(this.articles, index, article);
-            }
         }
+
     }
 };
 </script>

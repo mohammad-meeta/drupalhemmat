@@ -107,6 +107,17 @@ ArticleIndex.init = function init() {
                  * Show the create form
                  */
                 showCreateForm(data) {
+                    if (null != data) {
+                        data = {
+                            id: data.id,
+                            title: data.title,
+                            articleType: data.type_id,
+                            documentCategory: data.document_category_id,
+                            status: data.status,
+                            body: data.body
+                        };
+                    }
+
                     CKEDITOR.instances.editor.setData((data || {}).body || '');
                     this.$refs.articleCreate.clearNewArticle(data);
                     this.changeFormMode(this.FORM_MODES.CREATE);

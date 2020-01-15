@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\ArticleStore;
 use App\Http\Resources\ArticleResource;
 use App\Http\Resources\ArticleCollection;
-
+use App\Http\Resources\ArticleDocumentCollection;
 
 class ArticleController extends Controller
 {
@@ -44,10 +44,12 @@ class ArticleController extends Controller
             'body' => $request->body,
             'user_id' => Auth::user()->id,
             'type_id' => $request->type,
+            'document_category_id' => $request->documentCategory,
             'status' => $request->status
         ]);
 
         $article->load('type');
+        $article->load('documentCategory');
         $article->load('files');
         $article = new ArticleStore($article);
 
@@ -75,7 +77,7 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        $article->load(['type', 'files']);
+        $article->load(['type', 'documentCategory', 'files']);
         $article = new ArticleResource($article);
 
         return [
@@ -104,13 +106,14 @@ class ArticleController extends Controller
     {
         $article['title'] = $request['title'];
         $article['type_id'] = $request['type'];
+        $article['document_category_id'] = $request['documentCategory'];
         $article['body'] = $request['body'];
         $article['status'] = $request['status'];
         $article->save();
 
         $article->files()->detach($request->deletedFiles);
 
-        $article->load(['type', 'files']);
+        $article->load(['type', 'documentCategory', 'files']);
 
         $article = new ArticleStore($article);
 
@@ -145,7 +148,7 @@ class ArticleController extends Controller
     public function articlesList()
     {
         $list = Article::with(['type', 'files'])
-                ->select([ 'id', \DB::raw("'' as body"), 'title', 'status', 'type_id' ])
+                ->select([ 'id', \DB::raw("'' as body"), 'title', 'status', 'type_id', 'document_category_id' ])
                 ->paginate(parent::PAGE_SIZE);
 
         $list = new ArticleCollection($list);
@@ -154,20 +157,29 @@ class ArticleController extends Controller
     }
 
     /**
+     * show documents center index page
+     */
+    public function documentsCenter()
+    {
+        return view('articles.documents-center');
+    }
+
+    /**
      * Get documents center list
      */
-    public function documentsCenterList()
+    public function articleDocumentsCenterList()
     {
         $condition = [
-            ['type_id', '1'],
             ['status', true]
         ];
 
-        $list = Article::with('type')
+        $documentlist = Article::with(['type', 'documentCategory'])
             ->where($condition)
             ->paginate(parent::PAGE_SIZE);
 
-        return $list;
+        $documentlist = new ArticleDocumentCollection($documentlist);
+
+        return $documentlist;
     }
 
     /**

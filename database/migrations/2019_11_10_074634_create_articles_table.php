@@ -27,6 +27,11 @@ class CreateArticlesTable extends Migration
                 ->references('id')
                 ->on('article_types');
 
+            $table->unsignedBigInteger('document_category_id');
+            $table->foreign('document_category_id')
+                ->references('id')
+                ->on('document_categories');
+
             $table->string('title');
             $table->text('body');
             $table->boolean('status');
