@@ -65,6 +65,7 @@ IndicatorIndex.init = function init() {
                  * On detail form's back button pressed
                  */
                 cancelDetailForm() {
+                    console.log("ggggggg");
                     this.changeFormMode(this.FORM_MODES.LIST);
                 },
 

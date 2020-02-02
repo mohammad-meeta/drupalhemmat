@@ -13,10 +13,10 @@
             @include('monitorings.header')
         </div>
 
-        <monitoring-detail v-show="isDetailMode"
-            ref="monitoringDetail"
-            show-url="{{ route('monitoring.show', '_ID_') }}"
-            @on-back-pressed="cancelDetailForm"></monitoring-detail>
+        <indicator-detail v-show="isDetailMode"
+            ref="indicatorDetail"
+            show-url="{{ route('indicator.show', '_ID_') }}"
+            @on-back-pressed="cancelDetailForm"></indicator-detail>
 
         <monitoring-list ref="monitoringList" v-show="isListMode" url="{{ route('api.monitoring.list') }}"
             @on-edit-monitoring="showEditForm"

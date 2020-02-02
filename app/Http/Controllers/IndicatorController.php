@@ -6,6 +6,7 @@ use App\Indicator;
 use App\Http\Resources\IndicatorStore;
 use App\Http\Resources\IndicatorResource;
 use App\Http\Resources\IndicatorCollection;
+use App\Http\Resources\IndicatorMonitoringCollection;
 use Illuminate\Http\Request;
 
 class IndicatorController extends Controller
@@ -125,5 +126,30 @@ class IndicatorController extends Controller
         $list = new IndicatorCollection($list);
 
         return $list;
+    }
+
+    /**
+     * show monitoring indicators index page
+     */
+    public function monitoringIndicators()
+    {
+        return view('indicators.monitoring-indicators');
+    }
+
+    /**
+     * Get monitoring indicators list
+     */
+    public function monitoringIndicatorsList()
+    {
+        $condition = [
+            ['status', true]
+        ];
+
+        $indicatorlist = Indicator::with(['indicatorCategory'])
+            ->where($condition)
+            ->paginate(parent::PAGE_SIZE);
+
+        $indicatorlist = new IndicatorMonitoringCollection($indicatorlist);
+        return $indicatorlist;
     }
 }

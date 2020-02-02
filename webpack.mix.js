@@ -37,6 +37,7 @@ mix.js('resources/js/app.js', `${public}/js`)
     .js('resources/js/pages/document_categories/index/index.js', `${public}/js/pages/document_categories/index`)
     .js('resources/js/pages/indicator_categories/index/index.js', `${public}/js/pages/indicator_categories/index`)
     .js('resources/js/pages/indicators/index/index.js', `${public}/js/pages/indicators/index`)
+    .js('resources/js/pages/indicators/monitoring_indicators/index.js', `${public}/js/pages/indicators/monitoring_indicators`)
     .js('resources/js/pages/monitorings/index/index.js', `${public}/js/pages/monitorings/index`)
     .js('resources/js/pages/provinces/index/index.js', `${public}/js/pages/provinces/index`)
     .js('resources/js/pages/article_types/index/index.js', `${public}/js/pages/article_types/index`);

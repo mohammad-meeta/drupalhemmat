@@ -12,6 +12,9 @@ Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('/article/documents-center', 'ArticleController@documentsCenter')
     ->name('article.documents-center');
 
+Route::get('/monitoring/indicators', 'IndicatorController@monitoringIndicators')
+    ->name('indicator.monitoring-indicators');
+
 Route::resource('article-type', 'ArticleTypeController');
 
 Route::resource('document-category', 'DocumentCategoryController');

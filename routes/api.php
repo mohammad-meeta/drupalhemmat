@@ -35,3 +35,6 @@ Route::get('/article/list', 'ArticleController@articlesList')
 
 Route::get('/article/documents-center/list', 'ArticleController@articleDocumentsCenterList')
     ->name('api.article.documentsCenterList');
+
+Route::get('/monitoring/indicators/list', 'IndicatorController@monitoringIndicatorsList')
+    ->name('api.indicator.monitoringList');
