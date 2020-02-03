@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-    h1 {{ indicator.title }}
+    h1 {{ indicator[0].title }}
 
     a.btn.btn-warning(@click.prevent="backPressed") بازگشت
 </template>

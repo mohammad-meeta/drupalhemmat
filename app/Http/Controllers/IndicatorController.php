@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Indicator;
+use App\Monitoring;
 use App\Http\Resources\IndicatorStore;
 use App\Http\Resources\IndicatorResource;
 use App\Http\Resources\IndicatorCollection;
 use App\Http\Resources\IndicatorMonitoringCollection;
+use App\Http\Resources\MonitoringIndicatorCollection;
 use Illuminate\Http\Request;
 
 class IndicatorController extends Controller
@@ -64,10 +66,22 @@ class IndicatorController extends Controller
     {
         $indicator->load(['indicatorCategory']);
         $indicator = new IndicatorResource($indicator);
+        $condition = [
+            ['status', true],
+            ['indicator_id', $indicator->id]
+        ];
+
+        $list = Monitoring::select(['id', 'indicator_id', 'province_id', 'amount', 'year', 'status'])
+            ->where($condition)
+            ->paginate(parent::PAGE_SIZE);
+
+        $list = new MonitoringIndicatorCollection($list);
+
 
         return [
             "success" => true,
-            "data" => $indicator
+            "data" => [$indicator,
+                    $list]
         ];
     }
 
