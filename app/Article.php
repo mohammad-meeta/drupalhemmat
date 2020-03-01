@@ -11,6 +11,7 @@ class Article extends Model
         'user_id',
         'type_id',
         'document_category_id',
+        'department',
         'title',
         'body',
         'status'
@@ -38,6 +39,14 @@ class Article extends Model
     public function documentCategory()
     {
         return $this->belongsTo(DocumentCategory::class);
+    }
+
+    /**
+     * Article department
+     */
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 
     /**

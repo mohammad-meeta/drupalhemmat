@@ -45,7 +45,6 @@ class CityController extends Controller
             "success" => !is_null($city),
             "data" => $city
         ];
-        //return redirect()->route('city.index')->with('success', 'شهر با موفقیت ذخیره شد');
     }
 
     /**

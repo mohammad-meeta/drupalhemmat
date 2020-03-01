@@ -50,7 +50,7 @@ class OrganController extends Controller
             "success" => ! is_null($organ),
             "data" => $organ
         ];
-        // return redirect()->route('organ.index')->with('success', 'دستگاه اجرایی با موفقیت ذخیره شد');
+
     }
 
     /**

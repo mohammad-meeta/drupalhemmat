@@ -18,5 +18,17 @@ class ArticleTypeSeeder extends Seeder
         ArticleType::create([
             "title" => "رویداد"
         ]);
+        ArticleType::create([
+            "title" => "معرفی"
+        ]);
+        ArticleType::create([
+            "title" => "آیین نامه"
+        ]);
+        ArticleType::create([
+            "title" => "صورتجلسه"
+        ]);
+        ArticleType::create([
+            "title" => "اعضا"
+        ]);
     }
 }

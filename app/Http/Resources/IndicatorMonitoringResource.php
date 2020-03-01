@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ArticleStore extends JsonResource
+class IndicatorMonitoringResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,13 +15,9 @@ class ArticleStore extends JsonResource
     public function toArray($request)
     {
         return [
-            "id"   => $this->id,
+            "id" => $this->id,
             "title" => $this->title,
-            "body" => $this->body,
-            "department" => $this->department,
-            "type" => $this->whenLoaded('type'),
-            "status" => $this->status
+            "indicator_category" => $this->indicatorCategory
         ];
-        //    return parent::toArray($request);
     }
 }

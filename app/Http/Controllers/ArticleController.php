@@ -39,12 +39,49 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        $messages = [
+            'title.required' => 'عنوان نباید خالی باشد.',
+            'title.unique' => 'عنوان نباید تکراری باشد.',
+            'title.max' => 'عنوان طولانی است.',
+            'body.required' => 'توضیحات نباید خالی باشد.',
+            'type.required' => 'نوع نباید خالی باشد.',
+            'status.required' => 'وضعیت نباید خالی باشد.',
+        ];
+        $rules = [
+            'title' => 'required|unique:articles|max:255',
+            'body' => 'required',
+            'type' => 'required',
+            'status' => 'required',
+            'documentCategory' => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $type = $request->input('type');
+
+                    if ($type == '1' && $value == null) {
+                        $fail('دسته بندی سند مورد نظر را انتخاب کنید.');
+                    }
+                },
+            ],
+            'department' => [
+                function ($attribute, $value, $fail) use ($request) {
+                    $type = $request->input('type');
+
+                    if ($type == '3' && $value == null) {
+                        $fail('قسمت مورد نظر را انتخاب کنید');
+                    }
+                },
+            ],
+        ];
+        $this->validate($request, $rules, $messages);
+
+
+
         $article = Article::create([
             'title' => $request->title,
             'body' => $request->body,
             'user_id' => Auth::user()->id,
             'type_id' => $request->type,
             'document_category_id' => $request->documentCategory,
+            'department' => $request->department,
             'status' => $request->status
         ]);
 
@@ -58,15 +95,6 @@ class ArticleController extends Controller
             "data" => $article
         ];
 
-
-        /*   $article = Article::create([
-            'title' => $request->title,
-            'type_id' => $request->type,
-            'body' => $request->body,
-            'user_id' => Auth::user()->id
-        ]);
-
-        return redirect()->route('article.index')->with('success', 'مطلب با موفقیت ذخیره شد');*/
     }
 
     /**
@@ -104,9 +132,31 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+
+        $request->validate([
+            'title' => 'required|unique:articles|max:255',
+            'body' => 'required',
+            'type_id' => 'required',
+            'status' => 'required',
+            'department' => 'not_in:-1'
+        ]);
+
+  /*      $validator = Validator::make($request->all(), [
+            'department' => [
+                'required',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if ($value === '-1') {
+                        $fail($attribute . ' is invalid.');
+                    }
+                },
+            ],
+        ]);*/
+
         $article['title'] = $request['title'];
         $article['type_id'] = $request['type'];
         $article['document_category_id'] = $request['documentCategory'];
+        $article['department'] = $request['department'];
         $article['body'] = $request['body'];
         $article['status'] = $request['status'];
         $article->save();
@@ -121,12 +171,6 @@ class ArticleController extends Controller
             "success" => !is_null($article),
             "data" => $article
         ];
-
-        /*    $article['title'] = $request['title'];
-        $article['type_id'] = $request['type'];
-        $article['body'] = $request['body'];
-        $article->save();
-        return redirect('/article/' . $article->id)->with('success', 'مطلب با موفقیت ویرایش شد.');*/
     }
 
     /**

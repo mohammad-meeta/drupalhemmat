@@ -24,6 +24,10 @@ h1,h2,h3,h4,h5,h6 {
     color: #3E4D61;
 }
 
+.disabled-opt {
+    color: #dcdcdc;
+}
+
 .pp-striped-table {
     @extend .table;
     // @extend .table.striped;

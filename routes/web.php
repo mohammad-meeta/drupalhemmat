@@ -25,6 +25,8 @@ Route::resource('indicator-category', 'IndicatorCategoryController');
 
 Route::resource('province', 'ProvinceController');
 
+Route::resource('department', 'DepartmentController');
+
 Route::resource('article', 'ArticleController');
 
 

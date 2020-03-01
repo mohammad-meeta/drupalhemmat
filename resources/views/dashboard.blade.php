@@ -22,10 +22,14 @@
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="add-content" role="tabpanel" aria-labelledby="add-content-tab">
                 <h2>افزودن محتوا</h2>
+                <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('document-category.index')}}">دسته بندی اسناد</a>
+                <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('article-type.index')}}">نوع مطلب</a>
                 <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('article.index')}}">مطالب</a>
                 <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('organ.index')}}">دستگاه اجرایی</a>
-                <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('article-type.index')}}">نوع مطلب</a>
                 <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('city.index')}}">شهر</a>
+                <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('indicator-category.index')}}">دسته بندی شاخص دیده بانی</a>
+                <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('indicator.index')}}">شاخص دیده بانی</a>
+                <a class="btn btn-lg btn-primary p-3 m-2 w-25" href="{{route('monitoring.index')}}">دیده بانی</a>
             </div>
             <div class="tab-pane fade" id="content-management" role="tabpanel" aria-labelledby="content-management-tab">
                 <h2>Profile</h2>

@@ -20,6 +20,7 @@ class ArticleResource extends JsonResource
             "title" => $this->title,
             "body" => $this->body,
             "status" => $this->status,
+            "department" => $this->department,
             "type" => $this->type,
             "type_id" => $this->type_id,
             "document_category" => $this->document_category,

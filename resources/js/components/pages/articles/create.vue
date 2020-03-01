@@ -1,49 +1,72 @@
 <template lang="pug">
-form(method='POST', action='/article')
-    .form-group
-        label(for='my-input') عنوان
-        input.form-control(type='text', required='', v-model='newArticle.title')
+div
+    validation-errors(:errors='validationErrors', v-if='validationErrors')
 
-    .form-group
-        label(for='articleType') نوع مطلب
-        select.form-control(required='', v-model='newArticle.articleType' )
-            option(v-for='articleType in articleTypes', :key='articleType.id', :value='articleType.id')
-                | {{ articleType.title }}
+    form(method='POST', action='/article')
 
-    .form-group
-        label(for='documentCategory') دسته بندی اسناد
-        select.form-control(required='', v-model='newArticle.documentCategory' )
-            option(v-for='documentCategory in documentCategories', :key='documentCategory.id', :value='documentCategory.id')
-                | {{ documentCategory.title }}
+        .form-group
+            label(for='my-input') عنوان
+            input.form-control(type='text', required='', v-model='newArticle.title')
 
-    .form-group
-        label(for='editor') توضیحات
-        <textarea class="form-control" id="editor" name="editor" ref='editor' v-model="newArticle.title"></textarea>
-    .form-group
-        label(for="fileUpload") پیوست فایل
-        file-upload(ref="fileUpload", :upload-url="articleUploadUrl", @on-file-remove="articleFileRemove")
+        .form-group
+            label(for='articleType') نوع مطلب
+            select.form-control(required='', v-model='newArticle.articleType', @change="onChangeFormType($event)", name='articleType' )
+                option(v-for='articleType in articleTypes', :key='articleType.id', :value='articleType.id')
+                    | {{ articleType.title }}
 
-    .form-group.custom-control.custom-switch
-        input#switch1.custom-control-input(type='checkbox', checked,
-                            v-model='newArticle.status', :value='1')
-        label.custom-control-label(for='switch1') انتشار
+        .form-group(v-if='isDocumentType')
+            label(for='documentCategory') دسته بندی اسناد
+            select.form-control(v-model='newArticle.documentCategory' )
+                option.disabled-opt(value='-1', selected='') --دسته بندی مورد نظر را انتخاب کنید--
+                option(v-for='documentCategory in documentCategories', :key='documentCategory.id', :value='documentCategory.id')
+                    | {{ documentCategory.title }}
 
-    .form-group
-        button.btn.btn-primary(type='submit', @click.prevent='saveNewArticle') ذخیره
-        button.btn.btn-danger(type='button', @click.prevent='cancelCreateArticle') لغو
+        .form-group(v-if='isIntroductionType')
+            label(for='department') قسمت
+            select.form-control(v-model='newArticle.department')
+                option.disabled-opt(value='-1', selected='') --قسمت مورد نظر را انتخاب کنید--
+                option(value='معاونت ها و واحدهای تابعه') معاونت ها و واحدهای تابعه
+                option(value='شورای رابطان') شورای رابطان
+                option(value='هیات رئیسه دانشگاه') هیات رئیسه دانشگاه
+                option(value='هیات امنای دانشگاه') هیات امنای دانشگاه
+
+
+        .form-group
+            label(for='editor') توضیحات
+            <textarea class="form-control" id="editor" name="editor" ref='editor' v-model="newArticle.title"></textarea>
+        .form-group
+            label(for="fileUpload") پیوست فایل
+            file-upload(ref="fileUpload", :upload-url="articleUploadUrl", @on-file-remove="articleFileRemove")
+
+        .form-group.custom-control.custom-switch
+            input#switch1.custom-control-input(type='checkbox', checked,
+                                v-model='newArticle.status', :value='1')
+            label.custom-control-label(for='switch1') انتشار
+
+        .form-group
+            button.btn.btn-primary(type='submit', @click.prevent='saveNewArticle') ذخیره
+            button.btn.btn-danger(type='button', @click.prevent='cancelCreateArticle') لغو
 </template>
 
 <script>
 import FileUpload from "@components/global/file-upload.vue";
+import ValidationErrors from '@components/global/validation-errors.vue';
 
 export default {
     name: "ArticleCreate",
 
     components: {
-        FileUpload
+        FileUpload,
+        ValidationErrors
     },
 
     data: () => ({
+        FORM_TYPES: {
+            DOCUMENT: 1,
+            EVENTS: 2,
+            INTRODUCTION: 3
+        },
+        formType: null,
         newArticle: {},
         articleTypes: [],
         documentCategories: [],
@@ -51,6 +74,7 @@ export default {
         percentCompleted: 0,
         data: {},
         articleUploadUrl: "",
+        validationErrors: ''
     }),
 
     props: {
@@ -85,7 +109,19 @@ export default {
         }
     },
 
+    computed: {
+        isDocumentType() {
+            return this.formType == this.FORM_TYPES.DOCUMENT;
+        },
+        isEventsType() {
+            return this.formType == this.FORM_TYPES.EVENTS;
+        },
+        isIntroductionType: state => state.formType == state.FORM_TYPES.INTRODUCTION
+
+    },
+
     created() {
+        Vue.set(this, 'formType', 1);
         this.init();
     },
 
@@ -116,15 +152,23 @@ export default {
          * Save new article data
          */
         saveNewArticle() {
+            if (this.newArticle.documentCategory == -1) {
+                this.newArticle.documentCategory = null;
+            }
+            if (this.newArticle.department == -1) {
+                this.newArticle.department = null;
+            }
             let newArticle = {
                 id: this.newArticle.id,
                 title: this.newArticle.title,
                 body: CKEDITOR.instances.editor.getData(),
                 type: this.newArticle.articleType,
                 documentCategory: this.newArticle.documentCategory,
+                department: this.newArticle.department,
                 status: this.newArticle.status,
                 deletedFiles: this.newArticle.deletedFiles
             };
+            console.log(this.newArticle.documentCategory);
 
             let url = "";
             let method = "";
@@ -151,7 +195,6 @@ export default {
                         url = this.showUrl.replace("_ID_", data.data.id);
                         let newRecord = await axios.get(url);
                         newRecord = newRecord.data;
-
                         if (newArticle.id == null) {
                             this.$emit("on-new-article", newRecord);
                         } else {
@@ -162,6 +205,9 @@ export default {
                     }
                 })
                 .catch(err => {
+                    if (err.response.status == 422){
+                        this.validationErrors = err.response.data.errors;
+                    }
                     console.log(err);
                 });
         },
@@ -207,20 +253,19 @@ export default {
                     title: null,
                     body: null,
                     articleType: null,
-                    documentCategory: null,
+                    documentCategory: -1,
+                    department: -1,
                     status: null
                 };
             }
             data.deletedFiles = [];
 
             if (data.articleType == null && this.articleTypes.length > 0) {
-                // this.$refs.uploadFile.resetFiles();
                 data.articleType = this.articleTypes[0].id;
             }
 
             if (data.documentCategory == null && this.documentCategories.length > 0) {
-                // this.$refs.uploadFile.resetFiles();
-                data.documentCategory = this.documentCategories[0].id;
+                //data.documentCategory = this.documentCategories[0].id;
             }
 
             Vue.set(this, "newArticle", data);
@@ -254,6 +299,10 @@ export default {
                     Vue.set(this, "documentCategories", data);
                 })
                 .catch(err => console.error(err));
+        },
+
+        onChangeFormType(event) {
+            Vue.set(this, 'formType', event.target.value);
         },
 
         /**

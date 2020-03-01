@@ -1,28 +1,27 @@
 'use strict';
 
-import ArticleList from '@components/pages/articles/list.vue';
-import ArticleCreate from '@components/pages/articles/create.vue';
-import ArticleDetail from '@components/pages/articles/detail.vue';
-
+import DepartmentList from '@components/pages/department/list.vue';
+import DepartmentCreate from '@components/pages/department/create.vue';
+import DepartmentDetail from '@components/pages/department/detail.vue';
 
 /**
- * Article Index class
+ * department Index class
  */
-function ArticleIndex() {}
-export default ArticleIndex;
+function DepartmentIndex() {}
+export default DepartmentIndex;
 
 /**
  * Init function
  */
-ArticleIndex.init = function init() {
+DepartmentIndex.init = function init() {
     window.v =
         new Vue({
             el: '#app',
 
             components: {
-                ArticleList,
-                ArticleCreate,
-                ArticleDetail
+                DepartmentList,
+                DepartmentCreate,
+                DepartmentDetail
             },
 
             data: {
@@ -70,32 +69,26 @@ ArticleIndex.init = function init() {
                 },
 
                 /**
-                 * On edit article result
+                 * On edit department result
                  * @param {Object} result
                  */
-                editArticle(result) {
-                    if (result.success) {
-                        result.data.type_id = result.data.type.id;
+                editDepartment(result) {
 
-                        this.$refs.articleList.updateArticle(result.data);
+                    if (result.success) {
+                        this.$refs.departmentList.updateDepartment(result.data);
                         this.changeFormMode(this.FORM_MODES.LIST);
+
                     } else {
-                        alert('Update article failed!');
+                        alert('Update department failed!');
                     }
                 },
 
                 /**
-                 * New article saved event
+                 * New department saved event
                  */
-                newArticle(result) {
+                newDepartment(result) {
                     if (result.success) {
-                        this.$refs.articleList.insertNewArticle(result.data);
-
-                        Vue.set(this, 'savingSuccess', true);
-                        setTimeout(() => {
-                            Vue.set(this, 'savingSuccess', false);
-                        }, 2000);
-
+                        this.$refs.departmentList.insertNewDepartment(result.data);
                         this.changeFormMode(this.FORM_MODES.LIST);
                     } else {
                         alert('Register new record failed!');
@@ -103,10 +96,10 @@ ArticleIndex.init = function init() {
                 },
 
                 /**
-                 * Show article
+                 * Show department
                  */
-                showArticle(article) {
-                    this.$refs.articleDetail.loadArticle(article.id);
+                showDepartment(department) {
+                    this.$refs.departmentDetail.loadDepartment(department.id);
                     this.changeFormMode(this.FORM_MODES.DETAIL);
                 },
 
@@ -114,20 +107,7 @@ ArticleIndex.init = function init() {
                  * Show the create form
                  */
                 showCreateForm(data) {
-                    if (null != data) {
-                        data = {
-                            id: data.id,
-                            title: data.title,
-                            articleType: data.type_id,
-                            documentCategory: data.document_category_id,
-                            department: data.department,
-                            status: data.status,
-                            body: data.body
-                        };
-                    }
-
-                    CKEDITOR.instances.editor.setData((data || {}).body || '');
-                    this.$refs.articleCreate.clearNewArticle(data);
+                    this.$refs.departmentCreate.clearNewDepartment(data);
                     this.changeFormMode(this.FORM_MODES.CREATE);
                 },
 
@@ -135,9 +115,9 @@ ArticleIndex.init = function init() {
                  * Show the edit form
                  */
                 async showEditForm(data) {
-                    const articleData = await this.$refs.articleDetail.loadArticle(data.id, true);
+                    const departmentData = await this.$refs.departmentDetail.loadDepartment(data.id, true);
 
-                    this.showCreateForm(articleData.data);
+                    this.showCreateForm(departmentData.data);
                 },
 
                 /**
@@ -158,15 +138,15 @@ ArticleIndex.init = function init() {
                 changeFormMode(mode) {
                     switch (mode) {
                         case this.FORM_MODES.LIST:
-                            Vue.set(this, 'pageTitle', 'مطالب');
+                            Vue.set(this, 'pageTitle', 'قسمت ها');
                             break;
 
                         case this.FORM_MODES.CREATE:
-                            Vue.set(this, 'pageTitle', 'ثبت مطلب');
+                            Vue.set(this, 'pageTitle', 'ثبت قسمت');
                             break;
 
                         case this.FORM_MODES.EDIT:
-                            Vue.set(this, 'pageTitle', 'ویرایش مطلب');
+                            Vue.set(this, 'pageTitle', 'ویرایش قسمت');
                             break;
                     }
 
@@ -184,4 +164,4 @@ ArticleIndex.init = function init() {
 };
 
 /* Start Point */
-ArticleIndex.init();
+DepartmentIndex.init();

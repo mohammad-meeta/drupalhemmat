@@ -30,6 +30,9 @@ Route::get('/monitoring/list', 'MonitoringController@monitoringsList')
 Route::get('/province/list', 'ProvinceController@provincesList')
     ->name('api.province.list');
 
+Route::get('/department/list', 'DepartmentController@departmentsList')
+    ->name('api.department.list');
+
 Route::get('/article/list', 'ArticleController@articlesList')
     ->name('api.article.list');
 
