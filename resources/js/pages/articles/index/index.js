@@ -107,7 +107,7 @@ ArticleIndex.init = function init() {
                  */
                 showArticle(article) {
                     this.$refs.articleDetail.loadArticle(article.id);
-                    this.changeFormMode(this.FORM_MODES.DETAIL);
+                    this.changeFormMode(this.FORM_MODES.DETAIL, article);
                 },
 
                 /**
@@ -120,7 +120,7 @@ ArticleIndex.init = function init() {
                             title: data.title,
                             articleType: data.type_id,
                             documentCategory: data.document_category_id,
-                            department: data.department,
+                            department: data.department_id,
                             status: data.status,
                             body: data.body
                         };
@@ -155,7 +155,7 @@ ArticleIndex.init = function init() {
                     Vue.set(this, 'isLoading', false);
                 },
 
-                changeFormMode(mode) {
+                changeFormMode(mode, article) {
                     switch (mode) {
                         case this.FORM_MODES.LIST:
                             Vue.set(this, 'pageTitle', 'مطالب');
@@ -168,6 +168,10 @@ ArticleIndex.init = function init() {
                         case this.FORM_MODES.EDIT:
                             Vue.set(this, 'pageTitle', 'ویرایش مطلب');
                             break;
+
+                        case this.FORM_MODES.DETAIL:
+                            Vue.set(this, 'pageTitle', article.title);
+                        break;
                     }
 
                     Vue.set(this, 'formMode', mode);

@@ -13,12 +13,17 @@
             @include('departments.header')
         </div>
 
-        <department-detail v-show="isDetailMode"
-            ref="departmentDetail"
-            show-url="{{ route('department.show', '_ID_') }}"
-            @on-back-pressed="cancelDetailForm"></department-detail>
+        <department-detail
+            v-show="isDetailMode"
+            show-url="{{ route('department.detail', '_ID_') }}"
+            ref="departmentDetail" :show-back-button="true"
+            @on-back-pressed="onDetailBackButton"
+            :department-id="selectedDepartmentId" :data-dep-id="selectedDepartmentId"
+            articles-url="{{ route('api.article.filter', '_ID_') }}">
+        </department-detail>
 
-        <department-list ref="departmentList" v-show="isListMode" url="{{ route('api.department.list') }}"
+        <department-list ref="departmentList" v-show="isListMode"
+            url="{{ route('api.department.list') }}"
             @on-edit-department="showEditForm"
             @on-show-department="showDepartment">
         </department-list>

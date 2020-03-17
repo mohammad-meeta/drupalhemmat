@@ -257,18 +257,18 @@ nav input:checked~#overlay .menu-links {
     position: absolute;
     width: 46%;
     text-align: center;
-    margin-top: 100px;
-    top: 34%;
+    margin-top: 50px;
+    top: 20%;
     left: 0%;
 }
 
 .sitename h1 {
-    font-size: 22px;
+    font-size: 20px;
     margin-bottom: 50px;
 }
 
 .sitename h2 {
-    font-size: 36px;
+    font-size: 30px;
 }
 
 /*===============front page top*/
@@ -276,11 +276,14 @@ nav input:checked~#overlay .menu-links {
 
 .front-page-link-box {
     background: #fff;
-    margin: -155px auto 15px auto;
+    margin: -0px auto 15px auto;
     padding: 15px 20px;
     overflow: hidden;
-    position: relative;
+    position: absolute;
     box-shadow: 0px 8px 14px #3E4D6124;
+    left: 0px;
+    right: 0px;
+    top: 314px;
 }
 
 .blue-luzy {
@@ -396,3 +399,23 @@ h2.item-category {
 }
 
 /*=====================asnad rahbordi age*/
+
+/*=========================hamahangi daroon bakhshi*/
+.intro-card {
+    min-height: 185px;
+    background: #fff;
+    border-top: 3px solid #08c2c0;
+    box-shadow: 0px 5px 14px #c7c7c7;
+}
+
+.intro-card-head h2 {
+    font-size: 18px;
+    padding: 5px;
+    text-align: center;
+    background: #ddf0f8;
+}
+
+.intro-card a {
+    color: #3E4D61;
+}
+/*=========================hamahangi daroon bakhshi*/

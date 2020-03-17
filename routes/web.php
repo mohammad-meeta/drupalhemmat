@@ -8,6 +8,7 @@ Auth::routes();
 Route::get('/', 'HomeController@welcome')->name('welcome');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/internal-coordination', 'InternalCoordinationController@index')->name('internalCoordination');
 
 Route::get('/article/documents-center', 'ArticleController@documentsCenter')
     ->name('article.documents-center');
@@ -26,6 +27,9 @@ Route::resource('indicator-category', 'IndicatorCategoryController');
 Route::resource('province', 'ProvinceController');
 
 Route::resource('department', 'DepartmentController');
+
+Route::get('/department/detail/{id}', 'DepartmentController@departmentsDetail')
+    ->name('department.detail');
 
 Route::resource('article', 'ArticleController');
 

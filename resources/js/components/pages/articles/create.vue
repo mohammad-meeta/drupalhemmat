@@ -16,7 +16,7 @@ div
 
         .form-group(v-if='isDocumentType')
             label(for='documentCategory') دسته بندی اسناد
-            select.form-control(v-model='newArticle.documentCategory' )
+            select.form-control(v-model='newArticle.documentCategory')
                 option.disabled-opt(value='-1', selected='') --دسته بندی مورد نظر را انتخاب کنید--
                 option(v-for='documentCategory in documentCategories', :key='documentCategory.id', :value='documentCategory.id')
                     | {{ documentCategory.title }}
@@ -25,11 +25,8 @@ div
             label(for='department') قسمت
             select.form-control(v-model='newArticle.department')
                 option.disabled-opt(value='-1', selected='') --قسمت مورد نظر را انتخاب کنید--
-                option(value='معاونت ها و واحدهای تابعه') معاونت ها و واحدهای تابعه
-                option(value='شورای رابطان') شورای رابطان
-                option(value='هیات رئیسه دانشگاه') هیات رئیسه دانشگاه
-                option(value='هیات امنای دانشگاه') هیات امنای دانشگاه
-
+                option(v-for='department in departments', :key='department.id', :value='department.id')
+                    | {{ department.title }}
 
         .form-group
             label(for='editor') توضیحات
@@ -70,6 +67,7 @@ export default {
         newArticle: {},
         articleTypes: [],
         documentCategories: [],
+        departments: [],
         attachments: [],
         percentCompleted: 0,
         data: {},
@@ -106,22 +104,27 @@ export default {
         documentCategoriesUrl: {
             type: String,
             default: ""
+        },
+
+        departmentsUrl: {
+            type: String,
+            default: ""
         }
     },
 
     computed: {
-        isDocumentType() {
-            return this.formType == this.FORM_TYPES.DOCUMENT;
-        },
-        isEventsType() {
-            return this.formType == this.FORM_TYPES.EVENTS;
-        },
-        isIntroductionType: state => state.formType == state.FORM_TYPES.INTRODUCTION
+        isIntroductionType: state => state.formType == state.FORM_TYPES.INTRODUCTION,
+
+        isEventsType: state => state.formType == state.FORM_TYPES.EVENTS,
+
+        isDocumentType: state => state.formType == state.FORM_TYPES.DOCUMENT,
 
     },
 
     created() {
-        Vue.set(this, 'formType', 1);
+        if(this.formType == null) {
+            Vue.set(this, 'formType', 1);
+        }
         this.init();
     },
 
@@ -268,6 +271,11 @@ export default {
                 //data.documentCategory = this.documentCategories[0].id;
             }
 
+           /* if (data.department == null && this.department.length > 0) {
+                //data.documentCategory = this.documentCategories[0].id;
+            }*/
+
+            Vue.set(this, 'formType', data.articleType);
             Vue.set(this, "newArticle", data);
         },
 
@@ -301,6 +309,21 @@ export default {
                 .catch(err => console.error(err));
         },
 
+        /**
+         * Load department
+         */
+        loadDepartments() {
+            console.log(this.departmentsUrl);
+            axios
+                .get(this.departmentsUrl)
+                .then(res => {
+                    const data = res.data;
+
+                    Vue.set(this, "departments", data);
+                })
+                .catch(err => console.error(err));
+        },
+
         onChangeFormType(event) {
             Vue.set(this, 'formType', event.target.value);
         },
@@ -311,6 +334,7 @@ export default {
         init() {
             this.loadArticleTypes();
             this.loadDocumentCategories();
+            this.loadDepartments();
         }
     }
 };

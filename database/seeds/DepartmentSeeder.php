@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
+use App\Department;
 class DepartmentSeeder extends Seeder
 {
     /**
@@ -11,17 +12,21 @@ class DepartmentSeeder extends Seeder
      */
     public function run()
     {
-        DocumentCategory::create([
-            "title" => "معاونت ها و واحدهای تابعه"
+        Department::create([
+            "title" => "معاونت ها و واحدهای تابعه",
+            "status" => true
         ]);
-        DocumentCategory::create([
-            "title" => "شورای رابطان"
+        Department::create([
+            "title" => "شورای رابطان",
+            "status" => true
         ]);
-        DocumentCategory::create([
-            "title" => "هیات رئیسه دانشگاه"
+        Department::create([
+            "title" => "هیات رئیسه دانشگاه",
+            "status" => true
         ]);
-        DocumentCategory::create([
-            "title" => "هیات امنای دانشگاه"
+        Department::create([
+            "title" => "هیات امنای دانشگاه",
+            "status" => true
         ]);
     }
 }

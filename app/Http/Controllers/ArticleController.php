@@ -73,20 +73,19 @@ class ArticleController extends Controller
         ];
         $this->validate($request, $rules, $messages);
 
-
-
         $article = Article::create([
             'title' => $request->title,
             'body' => $request->body,
             'user_id' => Auth::user()->id,
             'type_id' => $request->type,
             'document_category_id' => $request->documentCategory,
-            'department' => $request->department,
+            'department_id' => $request->department,
             'status' => $request->status
         ]);
 
         $article->load('type');
         $article->load('documentCategory');
+        $article->load('department');
         $article->load('files');
         $article = new ArticleStore($article);
 
@@ -94,7 +93,6 @@ class ArticleController extends Controller
             "success" => !is_null($article),
             "data" => $article
         ];
-
     }
 
     /**
@@ -137,11 +135,10 @@ class ArticleController extends Controller
             'title' => 'required|unique:articles|max:255',
             'body' => 'required',
             'type_id' => 'required',
-            'status' => 'required',
-            'department' => 'not_in:-1'
+            'status' => 'required'
         ]);
 
-  /*      $validator = Validator::make($request->all(), [
+        /*      $validator = Validator::make($request->all(), [
             'department' => [
                 'required',
                 'max:255',
@@ -156,14 +153,14 @@ class ArticleController extends Controller
         $article['title'] = $request['title'];
         $article['type_id'] = $request['type'];
         $article['document_category_id'] = $request['documentCategory'];
-        $article['department'] = $request['department'];
+        $article['department_id'] = $request['department'];
         $article['body'] = $request['body'];
         $article['status'] = $request['status'];
         $article->save();
 
         $article->files()->detach($request->deletedFiles);
 
-        $article->load(['type', 'documentCategory', 'files']);
+        $article->load(['type', 'documentCategory', 'department', 'files']);
 
         $article = new ArticleStore($article);
 
@@ -192,8 +189,23 @@ class ArticleController extends Controller
     public function articlesList()
     {
         $list = Article::with(['type', 'files'])
-                ->select([ 'id', \DB::raw("'' as body"), 'title', 'status', 'type_id', 'document_category_id' ])
-                ->paginate(parent::PAGE_SIZE);
+            ->select(['id', \DB::raw("'' as body"), 'title', 'status', 'type_id', 'department_id', 'document_category_id'])
+            ->paginate(parent::PAGE_SIZE);
+
+        $list = new ArticleCollection($list);
+
+        return $list;
+    }
+
+    /**
+     * Get articles filter
+     */
+    public function articlesFilter($id)
+    {
+        $list = Article::with(['type', 'files'])
+            ->where('department_id', $id)
+            ->select(['id', \DB::raw("'' as body"), 'title', 'body', 'status', 'type_id', 'department_id', 'document_category_id'])
+            ->paginate(parent::PAGE_SIZE);
 
         $list = new ArticleCollection($list);
 
@@ -242,23 +254,23 @@ class ArticleController extends Controller
         ];
     }
 
-    /**
-     * Store file
-     */
-    public function storeFile(Request $request)
-    {
-        $data = [
-            'original_name' => $request->getClientOriginalName(),
-            'name' => $request->name,
-            'extension' => $request->extension
-        ];
+    // /**
+    //  * Store file
+    //  */
+    // public function storeFile(Request $request)
+    // {
+    //     $data = [
+    //         'original_name' => $request->getClientOriginalName(),
+    //         'name' => $request->name,
+    //         'extension' => $request->extension
+    //     ];
 
-        $file = File::create($data);
-        $file = new FileStore($file);
+    //     $file = File::create($data);
+    //     $file = new FileStore($file);
 
-        return [
-            "success" => !is_null($file),
-            "data" => $file
-        ];
-    }
+    //     return [
+    //         "success" => !is_null($file),
+    //         "data" => $file
+    //     ];
+    // }
 }

@@ -54,7 +54,7 @@ export default {
             axios.get(this.url).then(res => {
                 const data = res.data;
 
-                Vue.set(this, "departments", data.data || []);
+                Vue.set(this, "departments", data || []);
             });
         },
 

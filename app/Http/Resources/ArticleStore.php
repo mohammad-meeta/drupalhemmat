@@ -18,7 +18,6 @@ class ArticleStore extends JsonResource
             "id"   => $this->id,
             "title" => $this->title,
             "body" => $this->body,
-            "department" => $this->department,
             "type" => $this->whenLoaded('type'),
             "status" => $this->status
         ];

@@ -41,6 +41,7 @@ mix.js('resources/js/app.js', `${public}/js`)
     .js('resources/js/pages/monitorings/index/index.js', `${public}/js/pages/monitorings/index`)
     .js('resources/js/pages/provinces/index/index.js', `${public}/js/pages/provinces/index`)
     .js('resources/js/pages/departments/index/index.js', `${public}/js/pages/departments/index`)
+    .js('resources/js/pages/departments/show/index.js', `${public}/js/pages/departments/show`)
     .js('resources/js/pages/article_types/index/index.js', `${public}/js/pages/article_types/index`);
 
 /* SASS */

@@ -1,8 +1,12 @@
 <template lang="pug">
 div
-    h1 {{ article.title }}
     h3 {{ article.type.title }}
     div(v-html="article.body")
+
+    ul
+        li(v-for="file in article.files" :key="file.id")
+            img(:src="file.url" alt="mm")
+            a(:href="file.url") {{ file.name }}
 
     a.btn.btn-warning(@click.prevent="backPressed") بازگشت
 </template>

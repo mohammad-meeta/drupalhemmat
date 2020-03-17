@@ -57,14 +57,9 @@ class DepartmentController extends Controller
      * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function show(Department $department)
+    public function show($id)
     {
-        $department = new DepartmentResource($department);
-
-        return [
-            "success" => true,
-            "data" => $department
-        ];
+        return view('departments.show', [ "id" => $id ]);
     }
 
     /**
@@ -115,11 +110,24 @@ class DepartmentController extends Controller
      */
     public function departmentsList()
     {
-        $list = Department::select(['id', 'title', 'status'])
-            ->paginate(parent::PAGE_SIZE);
-
-        $list = new DepartmentCollection($list);
+        $list = Department::all();
 
         return $list;
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Department  $department
+     * @return \Illuminate\Http\Response
+     */
+    public function departmentsDetail($id)
+    {
+        $department = \App\Department::find($id);
+
+        return [
+            "success" => true,
+            "data" => $department
+        ];
     }
 }

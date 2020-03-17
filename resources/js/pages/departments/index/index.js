@@ -36,7 +36,8 @@ DepartmentIndex.init = function init() {
                 isLoading: true,
                 formMode: null,
                 pageTitle: '',
-                savingSuccess: false
+                savingSuccess: false,
+                selectedDepartmentId: "0"
             },
 
             computed: {
@@ -60,7 +61,23 @@ DepartmentIndex.init = function init() {
                 this.hideLoading();
             },
 
+            mounted() {
+                const depDetail = this.$refs.departmentDetail;
+                const el = depDetail.$el;
+
+                const id = el.attributes['data-dep-id'].value;
+                console.log(id);
+                depDetail.loadDepartment(id);
+            },
+
             methods: {
+                /**
+                 * On  detail-back-button pressed
+                 */
+                onDetailBackButton(){
+                    this.changeFormMode(this.FORM_MODES.LIST);
+                },
+
                 /**
                  * On detail form's back button pressed
                  */
@@ -116,7 +133,6 @@ DepartmentIndex.init = function init() {
                  */
                 async showEditForm(data) {
                     const departmentData = await this.$refs.departmentDetail.loadDepartment(data.id, true);
-
                     this.showCreateForm(departmentData.data);
                 },
 

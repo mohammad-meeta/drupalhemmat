@@ -30,6 +30,7 @@
                 show-url="{{ route('article.show', '_ID_') }}"
                 article-types-url="{{ route('api.article-type.list') }}"
                 document-categories-url="{{ route('api.document-category.list') }}"
+                departments-url="{{ route('api.department.list') }}"
                 @on-new-article="newArticle"
                 @on-edit-article="editArticle"
                 @on-cancel-create="hideCreateForm"

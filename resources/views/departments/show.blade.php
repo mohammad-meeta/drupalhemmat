@@ -2,9 +2,14 @@
 
 @section('content')
 <div class="container">
-    <h1 class="pb-2 border-bottom">{{ $department->title }}</h1>
-    <div class="manage-post">
-
-    </div>
+    <department-detail show-url="{{ route('department.detail', '_ID_') }}"
+        ref="departmentDetail" :show-back-button="false" department-id="{{ $id }}"
+        data-dep-id="{{ $id }}"
+        articles-url="{{ route('api.article.filter', '_ID_') }}">
+    </department-detail>
 </div>
+@endsection
+
+@section('scripts')
+<script defer src="{{ mix('js/pages/departments/show/index.js') }}"></script>
 @endsection

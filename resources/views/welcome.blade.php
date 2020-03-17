@@ -17,68 +17,68 @@
 </div>
     <div class="front-page-link-box container row">
 
-        <div class="col-md-4 py-4 text-center">
+        <div class="col-md-4 py-3 text-center">
             <div class="blue-luzy icon-container">
                 <a href="/">
                     <img src="{{ asset('images/icons/handshake.svg') }}">
                 </a>
             </div>
-            <div class="icon-container-text py-4">
+            <div class="icon-container-text py-2">
                 <a href="/">همکاری بین بخشی</a>
             </div>
         </div>
 
-        <div class="col-md-4 py-4 text-center">
+        <div class="col-md-4 py-3 text-center">
             <div class="orange-luzy icon-container">
                 <a href="/">
                     <img src="{{ asset('images/icons/three-users.svg') }}">
                 </a>
             </div>
-            <div class="icon-container-text py-4">
+            <div class="icon-container-text py-2">
                 <a href="/">مشارکت مردم</a>
             </div>
         </div>
 
-        <div class="col-md-4 py-4 text-center">
+        <div class="col-md-4 py-3 text-center">
             <div class="blueg-luzy icon-container">
                 <a href="/">
                     <img src="{{ asset('images/icons/refresh-button.svg') }}">
                 </a>
             </div>
-            <div class="icon-container-text py-4">
+            <div class="icon-container-text py-2">
                 <a href="/">هماهنگی درون بخشی</a>
             </div>
         </div>
 
-        <div class="col-md-4 py-4 text-center">
+        <div class="col-md-4 py-3 text-center">
             <div class="green-luzy icon-container">
                 <a href="/">
                     <img src="{{ asset('images/icons/add-heart.svg') }}">
                 </a>
             </div>
-            <div class="icon-container-text py-4">
+            <div class="icon-container-text py-2">
                 <a href="/">دیده بانی سلامت استان</a>
             </div>
         </div>
 
-        <div class="col-md-4 py-4 text-center">
+        <div class="col-md-4 py-3 text-center">
             <div class="oranger-luzy icon-container">
                 <a href="/">
                     <img src="{{ asset('images/icons/calendar.svg') }}">
                 </a>
             </div>
-            <div class="icon-container-text py-4">
+            <div class="icon-container-text py-2">
                 <a href="/">رویدادها</a>
             </div>
         </div>
 
-        <div class="col-md-4 py-4 text-center">
+        <div class="col-md-4 py-3 text-center">
             <div class="purple-luzy icon-container">
                 <a href="/">
                     <img src="{{ asset('images/icons/asnadrahbordi.svg') }}">
                 </a>
             </div>
-            <div class="icon-container-text py-4">
+            <div class="icon-container-text py-2">
                 <a href="/">مرکز اسناد راهبردی</a>
             </div>
         </div>

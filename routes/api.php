@@ -36,6 +36,9 @@ Route::get('/department/list', 'DepartmentController@departmentsList')
 Route::get('/article/list', 'ArticleController@articlesList')
     ->name('api.article.list');
 
+Route::get('/article/filter/{id}', 'ArticleController@articlesFilter')
+    ->name('api.article.filter');
+
 Route::get('/article/documents-center/list', 'ArticleController@articleDocumentsCenterList')
     ->name('api.article.documentsCenterList');
 

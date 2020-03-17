@@ -32,7 +32,11 @@ class CreateArticlesTable extends Migration
                 ->references('id')
                 ->on('document_categories');
 
-            $table->string('department')->nullable();
+            $table->unsignedBigInteger('department_id')->nullable();
+            $table->foreign('department_id')
+                ->references('id')
+                ->on('departments');
+
             $table->string('title');
             $table->text('body');
             $table->boolean('status');

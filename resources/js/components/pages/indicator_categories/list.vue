@@ -62,7 +62,6 @@ export default {
          * Show indicator Category content
          */
         showIndicatorCategory(indicatorCategory) {
-            console.log("llllllll");
             this.$emit('on-show-indicator-category', indicatorCategory);
         },
 

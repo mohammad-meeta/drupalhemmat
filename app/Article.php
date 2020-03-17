@@ -11,7 +11,7 @@ class Article extends Model
         'user_id',
         'type_id',
         'document_category_id',
-        'department',
+        'department_id',
         'title',
         'body',
         'status'
@@ -62,7 +62,7 @@ class Article extends Model
      */
     public function addAttachment($file)
     {
-        $fileName = $file->store('files');
+        $fileName = $file->store('public/files');
         $ext = $file->getClientOriginalExtension();
 
         /* New file */
